@@ -20,7 +20,7 @@
             vertical-align: center;
         }
         #ovapresc label {
-            padding: 10px;
+            padding: .3rem;
             display: block;
         }
         #ovapresc .c1 {
@@ -34,7 +34,7 @@
         }
         #ovapresc thead th {
             border-bottom: 1px solid #aaa;
-            padding: 10px;
+            padding: .3rem;
             white-space: nowrap;
         }
         #ovapresc tbody > tr > td {
@@ -48,7 +48,7 @@
             font-weight: bold;
             background-color: #eee;
             border-right: 1px solid #aaa;
-            padding: 1rem;
+            padding: .3rem;
             white-space: nowrap;
         }
         #ovapresc tfoot th {
@@ -103,7 +103,12 @@
 	        text-transform: initial;
 	    }
 	    tbody th span { display: inline }
-        }
+	#ovapresc th,
+        #ovapresc label {
+            padding: 1rem;
+	    }
+
+	    }
     </style>
 </head>
 
@@ -112,7 +117,7 @@
         <thead>
             <tr>
                 <td></td>
-                <th class="c1"><span>Treatment</span>  <span class="p1">effective</span>, disease <span class="p1">cured</span>
+                <th class="c1"><span>Treatment</span>  <span class="p1">effective</span>, <span>disease </span><span class="p1">cured</span>
                 </th>
                 <th class="c2"><span>Treatment</span>  <span class="p1">effective</span> but <span class="p1">ongoing</span>
                 </th>
