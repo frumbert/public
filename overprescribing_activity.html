@@ -89,13 +89,17 @@
         .correct {
             background-color: rgba(206, 228, 179, .44);
         }
-        @media only screen and (min-width: 900px) {
 	    thead th span {
 	        display: none;
 	    }
 	    thead th span.p1 {
 	        display: inline;
 	        text-transform: capitalize;
+	    }
+    @media only screen and (min-width: 900px) {
+	    thead th span {
+	        display: inline;
+	        text-transform: initial;
 	    }
         }
     </style>
