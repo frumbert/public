@@ -327,7 +327,8 @@
 
             var checks = document.querySelectorAll("input[type='checkbox']");
             [].forEach.call(checks, function(o,i) {
-            	checks[i].setAttribute("checked", results[i]===1);
+		    console.log(o,i,checks[i],results[i]);
+		   if (results[i] && result[i] === 1) checks[i].setAttribute("checked");
             });
 
             var $catsort = $("#ovapresc");
