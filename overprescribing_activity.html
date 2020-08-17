@@ -90,9 +90,13 @@
             background-color: rgba(206, 228, 179, .44);
         }
         @media only screen and (min-width: 900px) {
-            thead th span:not(.p1) {
-                display: none;
-            }
+	    thead th span {
+	        display: none;
+	    }
+	    thead th span.p1 {
+	        display: inline;
+	        text-transform: capitalize;
+	    }
         }
     </style>
 </head>
