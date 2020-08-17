@@ -1,144 +1,375 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <title>Overprescribing activity</title>
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
-<style type="text/css">
-    body {
-        font-family: sans-serif;
-        background-color:transparent;
-        margin:0;
-    }
-    #ovapresc {
-        border-collapse: collapse;
-        width: 100%;
-    }
-#ovapresc th, #ovapresc td {
-    text-align: center;
-    vertical-align: center;
-}
-#ovapresc label {
-    padding: 10px;
-    display: block;
-}
-#ovapresc .c1 { background-color: #CEE4B3; }
-#ovapresc .c2 { background-color: #FCCAA9; }
-#ovapresc .c3 { background-color: #F0ACB6; }
-#ovapresc thead th {
-    border-bottom: 1px solid #aaa;
-    padding: 10px;
-    white-space: nowrap;
-}
-#ovapresc tbody > tr > td {
-    border-bottom: 1px solid #ccc;
-}
-#ovapresc tbody > tr:last-child > td {
-    border-bottom: none;
-}
-#ovapresc tbody > tr > th {
-    text-align: right;
-    font-weight: bold;
-    background-color: #eee;
-    border-right: 1px solid #aaa;
-    padding: 1rem;
-    white-space: nowrap;
-}
-#ovapresc tfoot th {
-    text-align: center;
-    background-color: #eee;
-    border-top: 1px solid #aaa;
-    padding: 1rem;
-}
-#ovapresc_answer {
-    display: none;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(255,255,255,.75);
-    overflow: auto;
-}
-#ovapresc_text {
-    background-color: #fff;
-    position: absolute;
-    left: 15%;
-    right: 15%;
-    top: 15%;
-    bottom: 15%;
-    box-shadow: 0 0 25px rgba(0,0,0,.5);
-    border-radius: 3px;
-    padding: 1.5rem;
-}
-#ovapresc_text p {
-    line-height: 1.5;
-}
-#ovapresc_close {
-    position: absolute;
-    top: calc(15% - 15px);
-    right: calc(15% - 15px);
-}
-</style>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <style type="text/css">
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: transparent;
+            margin: 0;
+        }
+        #ovapresc {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #ovapresc th,
+        #ovapresc td {
+            text-align: center;
+            vertical-align: center;
+        }
+        #ovapresc label {
+            padding: 10px;
+            display: block;
+        }
+        #ovapresc .c1 {
+            background-color: #CEE4B3;
+        }
+        #ovapresc .c2 {
+            background-color: #FCCAA9;
+        }
+        #ovapresc .c3 {
+            background-color: #F0ACB6;
+        }
+        #ovapresc thead th {
+            border-bottom: 1px solid #aaa;
+            padding: 10px;
+            white-space: nowrap;
+        }
+        #ovapresc tbody > tr > td {
+            border-bottom: 1px solid #ccc;
+        }
+        #ovapresc tbody > tr: last-child > td {
+            border-bottom: none;
+        }
+        #ovapresc tbody > tr > th {
+            text-align: right;
+            font-weight: bold;
+            background-color: #eee;
+            border-right: 1px solid #aaa;
+            padding: 1rem;
+            white-space: nowrap;
+        }
+        #ovapresc tfoot th {
+            text-align: center;
+            background-color: #eee;
+            border-top: 1px solid #aaa;
+            padding: 1rem;
+        }
+        #ovapresc_answer {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(255, 255, 255, .75);
+            overflow: auto;
+        }
+        #ovapresc_text {
+            background-color: #fff;
+            position: absolute;
+            left: 15%;
+            right: 15%;
+            top: 15%;
+            bottom: 15%;
+            box-shadow: 0 0 25px rgba(0, 0, 0, .5);
+            border-radius: 3px;
+            padding: 1.5rem;
+        }
+        #ovapresc_text p {
+            line-height: 1.5;
+        }
+        #ovapresc_close {
+            position: absolute;
+            top: calc(15% - 15px);
+            right: calc(15% - 15px);
+        }
+        .correct {
+            background-color: rgba(206, 228, 179, .44);
+        }
+        @media only screen and (min-width: 880px) {
+            thead th span: not(.p1) {
+                display: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<table id="ovapresc">
-    <thead>
-        <tr>
-            <td></td>
-            <th class="c1">Treatment effective, disease cured</th>
-            <th class="c2">Treatment effective but ongoing</th>
-            <th class="c3">Treatment not effective</th>
-        </tr>
+    <table id="ovapresc">
+        <thead>
+            <tr>
+                <td></td>
+                <th class="c1"><span>Treatment</span>  <span class="p1">effective</span>, disease <span class="p1">cured</span>
+                </th>
+                <th class="c2"><span>Treatment</span>  <span class="p1">effective</span> but <span class="p1">ongoing</span>
+                </th>
+                <th class="c3"><span>Treatment</span>  <span class="p1">not effective</span>
+                </th>
+            </tr>
         </thead>
         <tbody>
-            <tr><th>hydrochlorothiazide 25 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>isosorbide dinitrate 5 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>losartan potassium 25 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>salbutamol 4 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>prednisolone 5 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>amoxicillin 500 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>simvastatin 40 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>metformin 500 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>diclofenac 25 mg: enteric</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
-            <tr><th>omeprazole 20 mg</th><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td><td><label><input type="checkbox"></label></td></tr>
+            <tr>
+                <th>hydrochlorothiazide 25 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>isosorbide dinitrate 5 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>losartan potassium 25 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>salbutamol 4 mg</th>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>prednisolone 5 mg</th>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>amoxicillin 500 mg</th>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>simvastatin 40 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>metformin 500 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>diclofenac 25 mg: enteric</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <th>omeprazole 20 mg</th>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td class="answer">
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox">
+                    </label>
+                </td>
+            </tr>
         </tbody>
         <tfoot>
-        <tr>
-            <td></td>
-            <th colspan="3">
-                <button id="ovapresc_save" disabled="true">Check answers</button>
-            </th>
-        </tr>
+            <tr>
+                <td></td>
+                <th colspan="3">
+                    <button id="ovapresc_save" disabled="true">Check answers</button>
+                </th>
+            </tr>
         </tfoot>
-</table>
-<div id="ovapresc_answer">
-    <div id="ovapresc_text">
-        <p>The salbutamol, prednisolone and amoxicillin may be placed in the 'treatment effective, disease cured' pathway as long as Stephen's lungs are clear. Treatment with these medicines could potentially be tapered and/or stopped.</p>
-        <p>The blood pressure, hypercholesterolaemia and arthritis / proton pump inhibitor medicines could be placed in the 'treatment effective but ongoing' column.</p>
-        <p>The need for Stephen to take a medicine to counteract a side effect of diclofenac could potentially be considered over-prescription. Exploring other options for pain relief could be considered to enable Stephen to stop taking the proton pump inhibitor.</p>
-        <p>Metformin should be placed in the 'treatment not effective' column with a trigger to review the medicine.</p>
+    </table>
+    <div id="ovapresc_answer">
+        <div id="ovapresc_text">
+            <p>The salbutamol, prednisolone and amoxicillin may be placed in the 'treatment effective, disease cured' pathway as long as Stephen's lungs are clear. Treatment with these medicines could potentially be tapered and/or stopped.</p>
+            <p>The blood pressure, hypercholesterolaemia and arthritis / proton pump inhibitor medicines could be placed in the 'treatment effective but ongoing' column.</p>
+            <p>The need for Stephen to take a medicine to counteract a side effect of diclofenac could potentially be considered over-prescription. Exploring other options for pain relief could be considered to enable Stephen to stop taking the proton pump
+                inhibitor.</p>
+            <p>Metformin should be placed in the 'treatment not effective' column with a trigger to review the medicine.</p>
+        </div>
+        <a href="javascript:;" id="ovapresc_close">
+            <img src="data:image/png;base64,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"
+            />
+        </a>
     </div>
-    <a href="javascript:;" id="ovapresc_close"><img src="data:image/png;base64,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"/></a>
-</div>
 
-<script type="text/javascript">
-$(function() {
-    var $catsort = $("#ovapresc")
-        .on("click", ":checkbox", function (e) {
-            $(this).closest("tr").find(":checkbox").not(this).prop("checked", false);
-            var total = 0, trs = $("tbody> tr", $catsort).each(function(i,obj) {
-                if ($(obj).find(":checkbox").filter(":checked").length) total += 1;
+    <script type="text/javascript">
+        $(function() {
+
+            var results = [];
+            if (localStorage.getItem('results')) {
+                results = JSON.parse(localStorage.getItem('results'));
+            } else {
+                results = [];
+            }
+
+            var checks = document.querySelectorAll("input[type='checkbox']");
+            [].forEach.call(checks, function(o,i) {
+            	checks[i].setAttribute("checked", results[i]===1);
             });
-            if (total == trs.length) { $("#ovapresc_save").removeAttr("disabled"); }
+
+            var $catsort = $("#ovapresc");
+            function calculate() {
+                var total = 0,
+                    trs = $("tbody> tr", $catsort).each(function(i, obj) {
+                        if ($(obj).find(":checkbox").filter(":checked").length) total += 1;
+                    });
+                if (total == trs.length) {
+                    $("#ovapresc_save").removeAttr("disabled");
+                }
+            }
+
+            function save() {
+	            [].forEach.call(checks, function(o,i) {
+	            	results[i] = checks[i].checked ? 1 : 0;
+	            });
+	            localStorage.setItem('results', JSON.stringify(results));
+            }
+
+            function answer() {
+            	$(".answer", $catsort).attr("class","correct");
+            }
+
+            $catsort.on("click", ":checkbox", function(e) {
+                $(this).closest("tr").find(":checkbox").not(this).prop("checked", false);
+                calculate();
+            });
+
+            $("#ovapresc_save").click(function() {
+            	save();
+            	answer();
+                $("#ovapresc_answer").show();
+            });
+            $("#ovapresc_answer,#ovapresc_close").click(function(e) {
+                e.preventDefault();
+                $("#ovapresc_answer").hide();
+            })
         });
-    $("#ovapresc_save").click(function() {
-        $("#ovapresc_answer").show();
-    });
-    $("#ovapresc_answer,#ovapresc_close").click(function(e) {
-        e.preventDefault();
-        $("#ovapresc_answer").hide();
-    })
-});
-</script>
+    </script>
 </body>
+
 </html>
+
