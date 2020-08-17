@@ -327,7 +327,7 @@
 
             var checks = document.querySelectorAll("input[type='checkbox']");
             [].forEach.call(checks, function(o,i) {
-		   if (results[i] && results[i] === 1) checks[i].setAttribute("checked");
+		   if (results[i] && results[i] === 1) checks[i].setAttribute("checked","checked");
             });
 
             var $catsort = $("#ovapresc");
@@ -365,7 +365,9 @@
             $("#ovapresc_answer,#ovapresc_close").click(function(e) {
                 e.preventDefault();
                 $("#ovapresc_answer").hide();
-            })
+            });
+		
+	    calculate();
         });
     </script>
 </body>
