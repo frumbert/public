@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Overprescribing activity</title>
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <style type="text/css">
+html, body {
+	min-height: 100vh;
+	font-size: 16px;
+}
+body {
+	margin: 0;
+	font-family: Lato, sans-serif;
+	background-color: #d9e6f0;
+	color: #222;
+	overflow: hidden;
+}
+h1 {
+	font-size: 20px;
+	margin: .5rem 0;
+	font-weight: bold;
+}
+a[href=''] {
+	display: none;
+}
+#ref {
+	display: flex;
+	justify-content: space-between;
+    align-items: center;}
+#ref a {
+    width: 100px;
+    background-color: #0055a2;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    padding: 0 .7rem;
+    border-radius: 25px;
+    line-height: 2rem;
+}
+span.box {
+    margin-right: .2rem;
+	position:relative;
+    display: inline-block;
+    cursor:pointer;
+    padding: 10px;
+    min-width: 1.25rem;
+    text-align: center;
+    border: 1px solid #002f6a;
+    background-color: rgba(0,47,106,.1);
+    transition: background-color .2s;
+}
+span.box:after {
+	position: absolute;
+	top:0;left:0;font-size:10px;
+	content:'#';
+	margin:0;
+	color: rgba(47,47,47,.25);
+}
+span.box.selected {
+	background-color: #002f6a;
+	color: white;
+}
+span.box.selected:after {
+	color: inherit;
+}
+    </style>
+</head>
+
+<body>
+	<h1>References</h1>
+<div id="entries"></div>
+<div id="ref">
+	<p></p>
+	<a target="_blank" href="">Open Link</a>
+</div>
+<script type="text/javascript">
+var entries = [
+{"label":"Best Practice NZ. Safer prescribing of high-risk medicines - Methotrexate: potentially fatal in overdose. Best Practice Journal. 2014; 64.","link":"http://www.bpac.org.nz/BPJ/2014/October/safer-prescribing.aspx"},
+{"label":"Roughead L, Semple S, Rosenfeld E. Literature Review: Medication Safety in Australia. Australian Commission of Safety and Quality in Health Care, 2013.","link":"http://www.safetyandquality.gov.au/wp-content/uploads/2014/02/Literature-Review-Medication-Safety-in-Australia-2013.pdf"},
+{"label":"Medical Board of Australia. Good medical practice: a code of conduct for doctors in Australia. 2014.","link":"http://www.medicalboard.gov.au/Codes-Guidelines-Policies/Code-of-conduct.aspx"},
+{"label":"Antibiotic Expert Groups. Therapeutic Guidelines, Antibiotic. Version 15, 2015.","link":"http://online.tg.org.au/ip/desktop/index.htm"},
+{"label":"Kalish LM, Caughey GE, Roughead EE, et al. The prescribing cascade. Australian Prescriber 2011;34:162-6.","link":"https://www.nps.org.au/australian-prescriber/articles/the-prescribing-cascade"},
+{"label":"de Vries TPGM, Henning RH, Hogerzeil HV, et al. Guide to Good Prescribing. A practical manual. World Health Organization Action Programme on Essential Drugs, 1994.","link":"http://apps.who.int/medicinedocs/pdf/whozip23e/whozip23e.pdf"},
+{"label":"Trescot AM, Datta S, Lee M, et al. Opioid pharmacology. Pain Physician 2008;11:S133-53. [PubMed]","link":"http://www.ncbi.nlm.nih.gov/pubmed/18443637"},
+{"label":"Blanch B, Pearson S-A, Haber PS. An overview of the patterns of prescription opioid use, costs and related harms in Australia. Br J Clin Pharmacol 2014;78:1159-66. [Wiley Online Library]","link":"http://onlinelibrary.wiley.com/doi/10.1111/bcp.12446/abstract"},
+{"label":"Expert Group for Analgesics. Therapeutic Guidelines: Analgesic. Version 6. Therapeutic Guidelines Ltd, 2012."},
+{"label":"Kalso E, Edwards JE, Moore RA, et al. Opioids in chronic non-cancer pain: systematic review of efficacy and safety. Pain 2004;112:372-80. [PubMed]","link":"http://www.ncbi.nlm.nih.gov/pubmed/15561393"},
+{"label":"Roxburgh A, Bruno R, Larance B, et al. Prescription of opioid analgesics and related harms in Australia. Med J Aust 2011;195:280-4. [PubMed]","link":"http://www.ncbi.nlm.nih.gov/pubmed/21895598"},
+{"label":"Henderson JV, Harrison CM, Britt HC, et al. Prevalence, causes, severity, impact, and management of chronic pain in Australian general practice patients. Pain Med 2013;14:1346-61. [PubMed]","link":"http://www.ncbi.nlm.nih.gov/pubmed/23855874"},
+{"label":"Rogers KD, Kemp A, McLachlan AJ, et al. Adverse selection? A multi-dimensional profile of people dispensed opioid analgesics for persistent non-cancer pain. PLoS One 2013;8:e80095.","link":"http://www.ncbi.nlm.nih.gov/pubmed/24312456 "},
+{"label":"Harrison CM, Charles J, Henderson J, et al. Opioid prescribing in Australian general practice. Med J Aust 2012;196:380-1.","link":"http://www.ncbi.nlm.nih.gov/pubmed/22471532"},
+{"label":"Tasmanian Government Department of Health and Human Services. Protocol for prescribing opioids in Tasmania. 2011.","link":"http://www.dhhs.tas.gov.au/_data/assets/pdf_file/0004/77701/protocol_for_prescribing_opioids_in_tasmania.pdf"},
+{"label":"White J, Taverner D. Drug-seeking behaviour. Australian Prescriber 1997;20:68-70.","link":"http://www.australianprescriber.com/magazine/20/3/68/70/"},
+{"label":"Drugs and Poisons Regulation Group. Scams perpetrated by drug-seeking patients. Victorian Government Department of Health, 2010.","link":"http://www.health.vic.gov.au/dpu/downloads/casestudy-doctors.pdf"},
+{"label":"Gazarian M, Kelly M, McPhee JR, et al. Off-label use of medicines: consensus recommendations for evaluating appropriateness. Med J Aust 2006;185:544-8.","link":"https://www.ncbi.nlm.nih.gov/pubmed/17115966"},
+{"label":"Astra Zeneca Pty Ltd. BRILINTA (ticagrelor) Product Information. 2014.","link":"https://www.astrazeneca.com.au/content/dam/az-au/Material%20Safety%20Data/Brilintaltsupgt174ltsupgt.pdf"},
+{"label":"Day R. Off-label prescribing. Australian Prescriber 2013;36:182-3.","link":"https://www.nps.org.au/australian-prescriber/articles/off-label-prescribing"},
+{"label":"Council of Australian Therapeutic Advisory Groups (CATAG) “Rethinking medicines decision-making in Australian Hospitals. Guiding Principles for the quality use of off-label medicines (2013)","link":"http://www.catag.org.au/wp-content/uploads/2012/08/OKA9963-CATAG-Rethinking-Medicines-Decision-Making-final1.pdf"}
+];
+
+$(function() {
+	var range = location.search.length ? location.search.split("?")[1] : "0";
+	range = range.split(",").map(function(v){return parseInt(v,10)-1});
+	console.dir(range);
+	var out = document.querySelector("#entries");
+	entries.forEach(function(value, index) {
+		if (range[0]===-1 || range.indexOf(index)!==-1) {
+			var l = value.label.split(".")[0];
+			var box = document.createElement("span");
+			box.classList.add("box");
+			box.textContent = index+1;
+			box.setAttribute("title", l);
+			box.dataset.index = index;
+			box.onclick = entry;
+			out.appendChild(box);
+		}
+	});
+	document.querySelector("#entries .box").click();
+});
+
+function entry(e) {
+	var s = document.querySelector("#entries .selected");
+	if (s) s.classList.remove("selected");
+	e.target.classList.add("selected");
+	var index = e.target.dataset.index,
+		label = entries[index].label,
+		dot = label.indexOf("."),
+		title = label.substr(0,dot),
+		text = label.substr(dot+1);
+	document.querySelector("#ref>p").innerHTML = '<b>' + title + '</b><br>' + text;
+	document.querySelector("#ref>a").setAttribute("href", entries[index].link);
+}
+
+</script>
+</body>
+</html>
