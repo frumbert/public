@@ -108,7 +108,6 @@ var entries = [
 $(function() {
 	var range = location.search.length ? location.search.split("?")[1] : "0";
 	range = range.split(",").map(function(v){return parseInt(v,10)-1});
-	console.dir(range);
 	var out = document.querySelector("#entries");
 	entries.forEach(function(value, index) {
 		if (range[0]===-1 || range.indexOf(index)!==-1) {
@@ -123,6 +122,7 @@ $(function() {
 		}
 	});
 	document.querySelector("#entries .box").click();
+	if (document.querySelectorAll("#entries .box").length === 1) document.querySelector("#entries").style.display = "none";
 });
 
 function entry(e) {
