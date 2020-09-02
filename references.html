@@ -42,10 +42,7 @@
 			const link = definition.querySelector("a");
 			link.textContent = linkLabel;
 			if (null === source) {
-				references.removeAttribute("class");
-				references.classList.add('uk-alert','uk-alert-danger');
-				references.textContent = "Missing configuration file";
-				return;
+				return notfound();
 			}
 			fetch(source+'.json')
 				.then(function(response) {
@@ -55,7 +52,16 @@
 					db = json;
 					render();
 					references.querySelector("div:first-of-type").click();
+				})
+				.catch(function() {
+					return notfound();
 				});
+			function notfound() {
+				references.removeAttribute("class");
+				references.classList.add('uk-alert','uk-alert-danger');
+				references.textContent = "Missing configuration file";
+				return false;
+			}
 			function render() {
 				while (references.firstChild) {
 				  references.removeChild(references.firstChild);
