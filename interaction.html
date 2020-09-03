@@ -15,21 +15,16 @@
 	<body class="uk-overflow-auto">
 		<div class="uk-section uk-padding-remove-vertical">
 			<div class="uk-container uk-container-small">
-				<form class="uk-form-stacked uk-position-relative" method="get">
+				<form class="uk-form-stacked" method="get">
 				<input type="hidden" name="source">
 				<input type="hidden" name="indexes">
 				<input type="hidden" name="legend">
 				<fieldset class="uk-fieldset">
 				  <legend class="uk-legend">legend</legend>
-				  	<div class="uk-margin" id="question">
-				  	</div>
+				  	<div class="uk-margin uk-position-relative" id="question"></div>
 				    <div class="uk-margin">
 					  <div class="uk-margin uk-text-center">
 						<button class="uk-button uk-button-primary" disabled>Save</button>
-					  </div>
-					  <div class="uk-alert-warning uk-hidden uk-position-cover" uk-alert>
-					    <a class="uk-alert-close" uk-close></a>
-					    <p>Your response has been saved.</p>
 					  </div>
 				    </div>
 				  </fieldset>
@@ -46,7 +41,6 @@
 			const legend = urlParams.get('legend') ? urlParams.get('legend') : '';
 			const button = document.querySelector('.uk-button.uk-button-primary');
 			const question = document.getElementById('question');
-			const feedback = document.querySelector('div[uk-alert]');
 
 			if (null === source) {
 				return notfound();
@@ -140,7 +134,6 @@
 									o.setAttribute('name','radio'+index);
 									o.setAttribute('value', val);
 									o.onchange = hasInput;
-									console.log(response[index],val);
 									if (response[index] && response[index] === val) {
 										o.setAttribute('checked',true);
 									}
@@ -175,6 +168,14 @@
 								// insert before endNode
 								d.appendChild(n);
 							break;
+						}
+console.log(response[index],index,value);
+						if (response[index] && response[index]!==null && value.hasOwnProperty('feedback') && value.feedback.content) {
+							const feedback = document.getElementById('feedback').content.cloneNode(true);
+							const form = document.querySelector("form");
+							feedback.querySelector("h4").innerHTML = value.feedback.heading;
+							feedback.querySelector("p").innerHTML = value.feedback.content;
+							form.appendChild(feedback);
 						}
 
 					}
@@ -233,21 +234,13 @@
 		});
 	</script>
 
-	<template id="radio">
-		<div class="uk-margin">
-	        <div class="uk-form-label">Radio</div>
-	        <div class="uk-form-controls">
-	            <label><input class="uk-radio" type="radio" name="radio1"> Option 01</label><br>
-	        </div>
+	<template id="feedback">
+		<div class="uk-position-cover uk-overlay uk-overlay-primary uk-position-cover uk-position-small" uk-alert>
+			<a class="uk-alert-close" uk-close></a>
+			<h4 class='uk-h4'></h4>
+			<p></p>
 		</div>
 	</template>
-
-	<template id="textarea">
-		<div class="uk-margin">
-			<textarea class="uk-textarea" rows="5" placeholder="Enter your response here" data-index="0"></textarea>
-		</div>
-	</template>
-
 
 </body>
 </html>
