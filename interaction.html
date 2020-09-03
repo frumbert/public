@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+	<head>
+	   <title>Interaction</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/css/uikit.min.css" />
+		<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit-icons.min.js"></script>
+		<style>:root { --blue: #0055a2; --darkblue: #002f6a; } html { background-color: #d9e6f0;}</style>
+	</head>
+
+	<body class="uk-overflow-auto">
+		<div class="uk-section uk-padding-remove-vertical">
+			<div class="uk-container uk-container-small">
+				<form class="uk-form-stacked uk-position-relative" method="get">
+				<input type="hidden" name="source">
+				<input type="hidden" name="indexes">
+				<input type="hidden" name="legend">
+				<fieldset class="uk-fieldset">
+				  <legend class="uk-legend">legend</legend>
+				  	<div class="uk-margin" id="question">
+				  	</div>
+				    <div class="uk-margin">
+					  <div class="uk-margin uk-text-center">
+						<button class="uk-button uk-button-primary" disabled>Save</button>
+					  </div>
+					  <div class="uk-alert-warning uk-hidden uk-position-cover" uk-alert>
+					    <a class="uk-alert-close" uk-close></a>
+					    <p>Your response has been saved.</p>
+					  </div>
+				    </div>
+				  </fieldset>
+				</form>
+			</div>
+		</div>
+		<script type="text/javascript">
+		window.addEventListener('load', function() {
+			let db = [];
+            let response = {};
+			const urlParams = new URLSearchParams(window.location.search);
+			const source = urlParams.get('source');
+			const indexes = urlParams.get('indexes') ? urlParams.get('indexes').split(',').map(n => Number(n) -1) : null;
+			const legend = urlParams.get('legend') ? urlParams.get('legend') : '';
+			const button = document.querySelector('.uk-button.uk-button-primary');
+			const question = document.getElementById('question');
+			const feedback = document.querySelector('div[uk-alert]');
+
+			if (null === source) {
+				return notfound();
+			}
+
+			if (legend.length) {
+				document.querySelector(".uk-legend").textContent = legend;
+			} else {
+				remove(document.querySelector(".uk-legend"));
+			}
+
+           if (localStorage.getItem(source)) {
+				response = JSON.parse(localStorage.getItem(source));
+            } else {
+                response = [];
+            }
+
+			fetch(source+'.json')
+				.then(function(response) {
+					return response.json()
+				})
+				.then(function(json) {
+					db = json;
+					document.forms[0].source.value = source;
+					if (indexes === null) {
+						remove(document.querySelector("input[name='indexes']"));
+					} else {
+						document.forms[0].indexes.value = indexes.map(n=>n+1).join(',');
+					}
+					if (legend.length) {
+						document.forms[0].legend.value = legend;
+					} else {
+						remove(document.querySelector("input[name='legend']"));
+					}
+					render();
+				})
+				.catch(function(state) {
+					console.dir(state);
+					return notfound();
+				});
+
+			function remove(node) {
+				node.parentNode.removeChild(node);
+			}
+
+			function empty(node) {
+				while (node.firstChild) {
+				  node.removeChild(node.firstChild);
+				}
+			}
+
+			function notfound() {
+				const node = document.querySelector("form");
+				empty(node);
+				node.removeAttribute("class");
+				node.classList.add('uk-alert','uk-alert-danger');
+				node.textContent = "Missing configuration file";
+				return false;
+			}
+
+			function render() {
+				const endNode = button.closest("div");
+				let d = null;
+				db.forEach(function(value,index) {
+					if (indexes === null || (indexes.length && indexes.indexOf(index)!==-1)) {
+						if (value.prompt) {
+							let n = document.createElement("div");
+							n.classList.add('uk-form-label');
+							n.innerHTML = value.prompt;
+							endNode.insertAdjacentElement('beforebegin', n);
+						}
+
+						// controls container
+						d = document.createElement('div');
+						d.classList.add('uk-form-controls');
+						endNode.insertAdjacentElement('beforebegin', d);
+
+						switch (value.type) {
+							case "radio":
+
+								// write radios to controls container
+								value.responses.forEach(function(v,i) {
+									const label = v.label;
+									const required = v.required;
+
+									// input type=radio
+									let val = [index,i].join('.');
+									let o = document.createElement("input");
+									o.classList.add('uk-radio','uk-margin-small-right');
+									o.setAttribute('type','radio');
+									o.setAttribute('name','radio'+index);
+									o.setAttribute('value', val);
+									o.onchange = hasInput;
+									console.log(response[index],val);
+									if (response[index] && response[index] === val) {
+										o.setAttribute('checked',true);
+									}
+
+									// text next to radio
+									let c = document.createTextNode(label);
+
+									// label container
+									let n = document.createElement("label");
+									n.appendChild(o);
+									n.appendChild(c);
+									d.appendChild(n);
+
+									// add <br> between labels
+									if (i < value.responses.length -1) {
+										d.appendChild(document.createElement('br'));
+									}
+
+								});
+							break;
+
+							case "textarea":
+
+								// textarea
+								let n = document.createElement("textarea");
+								n.setAttribute("placeholder", "Enter your response here");
+								n.dataset.index = index;
+								n.setAttribute("rows", 5);
+								n.classList.add("uk-textarea");
+								n.value = response[i] ? response[i] : '';
+
+								// insert before endNode
+								d.appendChild(n);
+							break;
+						}
+
+					}
+				})
+			}
+
+			// figure out if the user has a value in each question
+			function hasInput() {
+				let total = 0;
+				let checked = 0;
+				db.forEach(function(value,index) {
+					if (indexes === null || (indexes.length && indexes.indexOf(index)!==-1)) {
+						total++;
+					}
+				});
+
+            	Array.from(document.forms[0].elements).forEach(function(input,index) {
+            		switch (input.type) {
+            			case "hidden": return;
+            			case "radio":
+	            			if (input.checked) {
+	            				checked++;
+	            			}
+	            	}
+	            });
+	            if (total === checked) {
+					button.removeAttribute("disabled");
+	            }
+			}
+
+            //  if (entry.hasOwnProperty('response')) {
+            // 	response.value = entry.response;
+            // 	button.removeAttribute('disabled');
+            // 	alert.classList.remove('uk-hidden');
+            // 	setTimeout(function() { UIkit.alert(alert).close()}, 2500);
+            // }
+
+            button.addEventListener('click', function () {
+            	Array.from(document.forms[0].elements).forEach(function(input,index) {
+            		switch (input.type) {
+            			case "hidden": return;
+            			case "radio":
+	            			if (input.checked) {
+	            				const v = document.forms[0][input.name].value;
+	            				let i = Number(v.split(".")[0]);
+	            				response[i] = v;
+	            			}
+	            			break;
+            		}
+            	});
+            	console.dir(JSON.stringify(response));
+            	localStorage.setItem(source, JSON.stringify(response));
+            });
+
+
+		});
+	</script>
+
+	<template id="radio">
+		<div class="uk-margin">
+	        <div class="uk-form-label">Radio</div>
+	        <div class="uk-form-controls">
+	            <label><input class="uk-radio" type="radio" name="radio1"> Option 01</label><br>
+	        </div>
+		</div>
+	</template>
+
+	<template id="textarea">
+		<div class="uk-margin">
+			<textarea class="uk-textarea" rows="5" placeholder="Enter your response here" data-index="0"></textarea>
+		</div>
+	</template>
+
+
+</body>
+</html>

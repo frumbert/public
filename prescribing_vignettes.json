@@ -1,0 +1,110 @@
+[
+{
+	"prompt":"Would you consider increasing Pam's dose of oxycodone?",
+	"type":"radio",
+	"responses": [
+		{"label":"Yes", "required":false},
+		{"label":"No", "required":false}
+	],
+	"feedback": {
+		"heading":"",
+		"content":""
+	}
+},
+{
+	"prompt":"Would you consider a different opioid?",
+	"type":"radio",
+	"responses": [
+		{"label":"Yes", "required":false},
+		{"label":"No", "required":false}
+	],
+	"feedback": {
+		"heading":"",
+		"content":""
+	}
+},
+{
+	"prompt":"Would you think Pam is at high risk of depenence?",
+	"type":"radio",
+	"responses": [
+		{"label":"Yes", "required":false},
+		{"label":"No", "required":false}
+	],
+	"feedback": {
+		"heading":"",
+		"content":""
+	}
+},
+{
+	"prompt":"Based on this information what course of action would you take for Matthew?",
+	"type":"radio",
+	"responses": [
+		{"label":"Further assessment of Matthew’s pain", "required": false},
+		{"label":"Organise a referral to physiotherapy and provide a prescription for an NSAID, with instructions to return in a week if it’s not better.", "required": false},
+		{"label":"Provide a prescription for a short course of codeine for Matthew", "required": false},
+		{"label":"Provide a prescription for a short course of tramadol for Matthew", "required": false},
+		{"label":"Other", "required": false}
+	],
+	"feedback": {
+		"heading":"Suggested action",
+		"content":"The Therapeutic Guidelines suggest that Matthew should undergo a full clinical assessment including history and psychosocial assessment of his pain before making treatment decisions."
+	}
+},
+{
+	"prompt":"Do you:",
+	"type":"radio",
+	"responses": [
+		{"label":"Consider a trial of an opioid", "required": false},
+		{"label":"Refer to a pain specialist", "required": false},
+		{"label":"Explore other options for chronic pain management such as pharmacological options and non-opioid analgesics", "required": false},
+		{"label":"None of the above", "required": false}
+	],
+	"feedback": {
+		"heading":"Suggested action",
+		"content":"Fibromyalgia is a complex condition. Referral to a specialist would provide her with additional support, however in the interim exploring other options for pain management aside from opioid medicines may help Jane manage the pain caused by her condition. To learn more about tapering opioid treatment for patients with chronic non-cancer pain, visit the NPS MedicineWise Clinical e-Audit <a href='https://www.nps.org.au/cpd/activities/opioids-redefining-doing-well?profession=GPs' target='_blank'>Opioids: redefining ‘doing well’ on opioids</a>. It will help you review your prescribing of opioids for patients with chronic non-cancer pain. "
+	}
+},
+{
+	"prompt":"Do you:",
+	"type":"radio",
+	"responses": [
+		{"label":"Give Jamie a prescription for a short supply of ocycodone at the same dose and route supplied by the hospital", "required": false},
+		{"label":"Do not write a prescription for an opioid, but give Jamie instructions to manage her pain with paracetamol and NSAIDs", "required": false},
+		{"label":"Give Jamie a script for a weaker opioid", "required": false},
+		{"label":"None of the above", "required": false}
+	],
+	"feedback": {
+		"heading":"Suggested action",
+		"content":"There is a growing body of evidence that effective pain management in the acute setting is a preventive measure, protecting people from chronic pain. A short course of opioids may be appropriate for Jamie here, however all options are probably appropriate if managed well and Jamie is reviewed regularly."
+	}
+},
+{
+	"prompt":"Do you:",
+	"type":"radio",
+	"responses": [
+		{"label":"Give Jamie a prescription for a short supply of ocycodone at the same dose and route supplied by the hospital", "required": false},
+		{"label":"Do not write a prescription for an opioid, but give Jamie instructions to manage her pain with paracetamol and NSAIDs", "required": false},
+		{"label":"Give Jamie a script for a weaker opioid", "required": false},
+		{"label":"None of the above", "required": false}
+	],
+	"feedback": {
+		"heading":"Suggested action",
+		"content":"<p>There is a growing body of evidence that effective pain management in the acute setting is a preventive measure, protecting people from chronic pain. A short course of opioids may be appropriate for Jamie here, however all options are probably appropriate if managed well and Jamie is reviewed regularly.</p>"
+	}
+},
+{
+	"prompt":"Do you:",
+	"type":"radio",
+	"responses": [
+		{"label":"Increase Mike’s dose to 20 mg four hourly", "required": false},
+		{"label":"Discuss changing to a modified release opioid", "required": false},
+		{"label":"Refer Mike back to the surgeon who performed his operation", "required": false},
+		{"label":"Investigate Mike’s pain further with a comprehensive assessment to assess his needs and risks.", "required": false},
+		{"label":"None of the above", "required": false}
+	],
+	"feedback": {
+		"heading":"Suggested action",
+		"content":"<p>Mike should be assessed further with a full comprehensive assessment to assess his needs and risks.</p><p>In particular, consider specialist advice for patients with complex needs at high risk of harm from opioids. In this case, specialist advice is recommended because he</p><ul><li>is taking > 60 mg OMEDD</li><li>has been using an opioid for > 90 days.</li></ul>"
+	}
+}
+]
