@@ -169,7 +169,7 @@
 								d.appendChild(n);
 							break;
 						}
-console.log(response[index],index,value);
+
 						if (response[index] && response[index]!==null && value.hasOwnProperty('feedback') && value.feedback.content) {
 							const feedback = document.getElementById('feedback').content.cloneNode(true);
 							const form = document.querySelector("form");
@@ -226,7 +226,6 @@ console.log(response[index],index,value);
 	            			break;
             		}
             	});
-            	console.dir(JSON.stringify(response));
             	localStorage.setItem(source, JSON.stringify(response));
             });
 
