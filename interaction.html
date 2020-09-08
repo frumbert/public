@@ -162,8 +162,11 @@
 								n.setAttribute("placeholder", "Enter your response here");
 								n.dataset.index = index;
 								n.setAttribute("rows", 5);
+								n.setAttribute("name","textarea"+index);
 								n.classList.add("uk-textarea");
-								n.value = response.length ? response : '';
+								n.oninput = hasInput;
+								console.log(index,response);
+								n.value = response[index] ? response[index] : "";
 
 								// insert before endNode
 								d.appendChild(n);
@@ -199,6 +202,12 @@
 	            			if (input.checked) {
 	            				checked++;
 	            			}
+	            			break;
+	            		case "textarea":
+	            			if (input.value.length > 0) {
+	            				checked++;
+	            			}
+	            			break;
 	            	}
 	            });
 	            if (total === checked) {
@@ -222,6 +231,13 @@
 	            				const v = document.forms[0][input.name].value;
 	            				let i = Number(v.split(".")[0]);
 	            				response[i] = v;
+	            			}
+	            			break;
+	            		case "textarea":
+	            			if (input.value.length) {
+	            				let i = Number(input.name.split("textarea")[1]);
+	            				console.log(input, i);
+	            				response[i] = input.value;
 	            			}
 	            			break;
             		}

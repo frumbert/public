@@ -13,8 +13,8 @@
 	"type":"textarea",
 	"responses": "",
 	"feedback": {
-		"heading":"Saved",
-		"content":"Your response has been saved"
+		"heading":"",
+		"content":""
 	}
 },
 {
