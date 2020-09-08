@@ -163,7 +163,7 @@
 								n.dataset.index = index;
 								n.setAttribute("rows", 5);
 								n.classList.add("uk-textarea");
-								n.value = response[i] ? response[i] : '';
+								n.value = response.length ? response : '';
 
 								// insert before endNode
 								d.appendChild(n);
