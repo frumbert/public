@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/css/uikit.min.css" />
 		<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/js/uikit-icons.min.js"></script>
-		<style>:root { --blue: #0055a2; --darkblue: #002f6a; } html { background-color: #d9e6f0;} .uk-overlay-primary { background: #1e87f0; }</style>
+		<style>:root { --blue: #0055a2; --darkblue: #002f6a; } html { background-color: #d9e6f0;} .uk-overlay-primary { background: #1e87f0; } .uk-flex > .uk-radio { margin-top: 0} .uk-flex > .uk-radio + span { border-radius: 4px; padding: .3rem; cursor: pointer; } .uk-flex > .uk-radio:checked + span { background-color: #1e87f0; color: white; }</style>
 	</head>
 
 	<body class="uk-overflow-auto">
@@ -33,6 +33,8 @@
 		</div>
 		<script type="text/javascript">
 		window.addEventListener('load', function() {
+			const maxH = document.body.scrollHeight;
+
 			let db = [];
             let response = {};
 			const urlParams = new URLSearchParams(window.location.search);
@@ -115,7 +117,7 @@
 
 						// controls container
 						d = document.createElement('div');
-						d.classList.add('uk-form-controls');
+						d.classList.add('uk-form-controls','uk-margin-small');
 						endNode.insertAdjacentElement('beforebegin', d);
 
 						switch (value.type) {
@@ -130,6 +132,7 @@
 									let val = [index,i].join('.');
 									let o = document.createElement("input");
 									o.classList.add('uk-radio','uk-margin-small-right');
+									o.style.flexShrink = 0;
 									o.setAttribute('type','radio');
 									o.setAttribute('name','radio'+index);
 									o.setAttribute('value', val);
@@ -139,17 +142,20 @@
 									}
 
 									// text next to radio
-									let c = document.createTextNode(label);
+									let c = document.createElement('span');
+									c.appendChild(document.createTextNode(label));
 
 									// label container
-									let n = document.createElement("label");
+									let n = document.createElement('label');
+									n.classList.add('uk-flex','uk-flex-middle');
 									n.appendChild(o);
 									n.appendChild(c);
 									d.appendChild(n);
 
-									// add <br> between labels
+									// render each radio in its own forms control container
 									if (i < value.responses.length -1) {
-										d.appendChild(document.createElement('br'));
+										d = d.cloneNode(false);
+										endNode.insertAdjacentElement('beforebegin', d);
 									}
 
 								});
