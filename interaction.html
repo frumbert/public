@@ -118,6 +118,9 @@
 						// controls container
 						d = document.createElement('div');
 						d.classList.add('uk-form-controls','uk-margin-small');
+						if (value.horizontal) {
+							d.classList.add("uk-grid");
+						}
 						endNode.insertAdjacentElement('beforebegin', d);
 
 						switch (value.type) {
@@ -153,7 +156,7 @@
 									d.appendChild(n);
 
 									// render each radio in its own forms control container
-									if (i < value.responses.length -1) {
+									if (!value.horizontal && i < value.responses.length -1) {
 										d = d.cloneNode(false);
 										endNode.insertAdjacentElement('beforebegin', d);
 									}
