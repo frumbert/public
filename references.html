@@ -30,69 +30,76 @@
 			</div>
 		</div>
 		<script type="text/javascript">
-		window.addEventListener('load', function() {
-			let db = [];
-			const urlParams = new URLSearchParams(window.location.search);
-			const source = urlParams.get('source');
-			const indexes = urlParams.get('indexes') ? urlParams.get('indexes').split(',').map(n => Number(n) -1) : null;
-			const linkLabel = urlParams.get('label') ? urlParams.get('label') : 'Open link';
-			const references = document.getElementById('references');
-			const definition = document.getElementById('definition');
-			const content = document.getElementById('content');
-			const link = definition.querySelector("a");
-			link.textContent = linkLabel;
-			if (null === source) {
-				return notfound();
-			}
-			fetch(source+'.json')
-				.then(function(response) {
-					return response.json()
-				})
-				.then(function(json) {
-					db = json;
-					render();
-					references.querySelector("div:first-of-type").click();
-				})
-				.catch(function() {
-					return notfound();
-				});
-			function notfound() {
-				references.removeAttribute("class");
-				references.classList.add('uk-alert','uk-alert-danger');
-				references.textContent = "Missing configuration file";
-				return false;
-			}
-			function render() {
-				while (references.firstChild) {
-				  references.removeChild(references.firstChild);
-				}
-				db.forEach(function(value,index) {
-					if (indexes === null || (indexes.length && indexes.indexOf(index)!==-1)) {
-						const div = document.createElement("div");
-						const span = document.createElement("span");
-						span.classList.add("uk-badge");
-						span.textContent = (index+1);
-						div.appendChild(span);
-						div.dataset.index = index;
-						div.title = value.label.split('.')[0];
-						div.onclick = show;
-						references.appendChild(div);
-					}
-				})
-			}
-			function show(e) {
-				const me = e.target.closest("div");
-				const index = me.dataset.index;
-				let row = db[index];
-				Array.from(me.parentNode.children).forEach(function(el) {
-					el.classList[el===me?"add":"remove"]('selected');
-				});
-				definition.classList.remove("uk-hidden");
-				content.innerHTML = row.label.replace(/\./,'<br>');
-				link.href = row.link;
-			}
+		"use strict";
+
+		window.addEventListener('load', function () {
+		  var db = [];
+		  var urlParams = new URLSearchParams(window.location.search);
+		  var source = urlParams.get('source');
+		  var indexes = urlParams.get('indexes') ? urlParams.get('indexes').split(',').map(function (n) {
+		    return Number(n) - 1;
+		  }) : null;
+		  var linkLabel = urlParams.get('label') ? urlParams.get('label') : 'Open link';
+		  var references = document.getElementById('references');
+		  var definition = document.getElementById('definition');
+		  var content = document.getElementById('content');
+		  var link = definition.querySelector("a");
+		  link.textContent = linkLabel;
+
+		  if (null === source) {
+		    return notfound();
+		  }
+
+		  fetch(source + '.json').then(function (response) {
+		    return response.json();
+		  }).then(function (json) {
+		    db = json;
+		    render();
+		    references.querySelector("div:first-of-type").click();
+		  }).catch(function () {
+		    return notfound();
+		  });
+
+		  function notfound() {
+		    references.removeAttribute("class");
+		    references.classList.add('uk-alert', 'uk-alert-danger');
+		    references.textContent = "Missing configuration file";
+		    return false;
+		  }
+
+		  function render() {
+		    while (references.firstChild) {
+		      references.removeChild(references.firstChild);
+		    }
+
+		    db.forEach(function (value, index) {
+		      if (indexes === null || indexes.length && indexes.indexOf(index) !== -1) {
+			var div = document.createElement("div");
+			var span = document.createElement("span");
+			span.classList.add("uk-badge");
+			span.textContent = index + 1;
+			div.appendChild(span);
+			div.dataset.index = index;
+			div.title = value.label.split('.')[0];
+			div.onclick = show;
+			references.appendChild(div);
+		      }
+		    });
+		  }
+
+		  function show(e) {
+		    var me = e.target.closest("div");
+		    var index = me.dataset.index;
+		    var row = db[index];
+		    Array.from(me.parentNode.children).forEach(function (el) {
+		      el.classList[el === me ? "add" : "remove"]('selected');
+		    });
+		    definition.classList.remove("uk-hidden");
+		    content.innerHTML = row.label.replace(/\./, '<br>');
+		    link.href = row.link;
+		  }
 		});
-	</script>
+		</script>
 
 </body>
 </html>
