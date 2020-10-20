@@ -25,5 +25,14 @@
 		"heading":"Saved",
 		"content":"Your response has been saved"
 	}
+},
+{
+	"prompt":"",
+	"type":"textarea",
+	"responses": "",
+	"feedback": {
+		"heading":"Saved",
+		"content":"Your response has been saved"
+	}
 }
 ]
