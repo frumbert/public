@@ -55,6 +55,16 @@
 		  textarea.addEventListener("input", check);
 		});
 
+		function IsCrossDomainFrame() {
+		    if( parent === window ) return false; //not a frame
+		    var parentLocation = new URL(document.referer);//the referer of an iframe is the parent
+		    return (parentLocation.protocol !== location.protocol ||
+		            parentLocation.hostname !== location.hostname ||
+		            parentLocation.port     !== location.port);
+		}
+		console.dir(window.self === window.top);
+		console.dir(IsCrossDomainFrame());
+
 	</script>
 </body>
 </html>
