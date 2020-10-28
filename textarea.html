@@ -58,17 +58,20 @@
 		function IsCrossDomainFrame() {
 		    if( parent === window ) return false; //not a frame
 		    try {
-		    console.dir(document.referer);
-		    var parentLocation = new URL(document.referer);//the referer of an iframe is the parent
-		    console.dir(parentLocation);
-		    return (parentLocation.protocol !== location.protocol ||
-		            parentLocation.hostname !== location.hostname ||
-		            parentLocation.port     !== location.port);
-		} catch(e) {
+			    console.dir(document.referer);
+			    var parentLocation = new URL(document.referer);//the referer of an iframe is the parent
+			    console.dir(parentLocation);
+			    return (parentLocation.protocol !== location.protocol ||
+				    parentLocation.hostname !== location.hostname ||
+				    parentLocation.port     !== location.port);
+		    } catch(e) {
 			return true;
+		    }
 		}
 		console.dir(window.self === window.top);
 		console.dir(IsCrossDomainFrame());
+			var foo = parent.postMessage('foo', location);
+			console.dir(foo);
 	</script>
 </body>
 </html>
