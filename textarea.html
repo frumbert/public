@@ -25,7 +25,6 @@
 		<script type="text/javascript">
 		"use strict";
 		var textarea, button, id;
-		var remote = (window.self === window.top);
 
 		function save() {
 			if (textarea.value.trim().length) {
@@ -71,6 +70,7 @@
 		console.dir(window.self === window.top);
 		console.dir(IsCrossDomainFrame());
 		var foo = parent.postMessage('hello', location);
+		console.dir(foo);
 
 	</script>
 </body>
