@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+	<head>
+	   <title>Tick Table</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?features=Array.from%2Cdocument.querySelector%2CURLSearchParams%2CElement.prototype.classList%2CElement.prototype.dataset"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+		<style>
+			html, body { min-height: 100vh; font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";  }
+			html { background-color: #ffffff; font-size: 62.5%; }
+			body { margin: 0; overflow: hidden; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6em; }
+
+			button { border: 1px solid #002f6a; background-color: #0055a2; transition: all .2s; padding: .5rem 1rem; color: #e4e4e4; margin: 1rem 0; }
+			button:hover, button:active { background-color: #007ef5; color: white; cursor: pointer;}
+			button.disabled, button:hover.disabled, button:active.disabled { border-color: #b2b2b2; background-color: #d9d9d9; color: #686868; pointer-events: none; }
+
+			table { flex: 1; width: 100%; resize: none; border-collapse: collapse; background-color: white; outline: none; box-shadow: 0 0 1rem rgba(0,0,0,.1); margin: 0; }
+			table,th,td { border: 1px solid #ddd; }
+			th { background-color: #e6e6e6; padding: 1.7rem 1.5rem 1.5rem; font-weight: 700; }
+			td:not(.input) { padding: 1.7rem 1.5rem; text-align: center; vertical-align: middle; }
+			td.input label { display: block; padding: 1.7rem 1.5rem; text-align: center;}
+			td.correct { background-color: #dbfedb; }
+		</style>
+	</head>
+
+	<body>
+
+		<button class="disabled">Check answer</button>
+		<script type="text/javascript">
+		"use strict";
+
+		var button,
+			id,
+			stored;
+
+		var columns = [
+			"Request from",
+			"Patient conest required",
+			"Overrules confidentiality"
+		];
+
+		var rows = [
+			{ "label":"Patient", "value": 1 },
+			{ "label":"Solicitor (direct request without subpoena)", "value": 1 },
+			{ "label":"Police (direct request without subpoena)", "value": 1 },
+			{ "label":"Subpoena / Summons", "value": 2 },
+			{ "label":"Coroner", "value": 2 },
+			{ "label":"Insurance or other third party", "value": 1 }
+		];
+
+		var table = document.createElement("table");
+		document.body.insertAdjacentElement("afterbegin", table);
+
+		var thead = document.createElement("thead");
+		table.appendChild(thead);
+		var trhead = document.createElement("tr");
+		thead.appendChild(trhead);
+		for (var th=0; th<columns.length; th++) {
+			var node = document.createElement("th");
+			node.innerHTML = columns[th];
+			trhead.appendChild(node);
+		}
+
+		var tbody = document.createElement("tbody");
+		table.appendChild(tbody);
+		for (var i=0; i<rows.length; i++) {
+			var tr = document.createElement("tr");
+			var node = document.createElement("td");
+			node.innerHTML = rows[i].label;
+			tr.appendChild(node);
+			tr.setAttribute("data-required",rows[i].value);
+			for (var opt=1;opt<columns.length;opt++) {
+				var td = document.createElement("td");
+				td.setAttribute("class","input");
+
+				var label = document.createElement("label");
+				td.appendChild(label);
+
+				node = document.createElement("input");
+				node.setAttribute("type", "radio");
+				node.setAttribute("name", "group_" + i);
+				node.setAttribute("value", opt);
+				label.appendChild(node);
+
+				tr.appendChild(td);
+			}
+			tbody.appendChild(tr);
+		}
+
+		function save() {
+			var nodes = Array.from(document.querySelectorAll("input:checked"));
+			for (var i=0; i<nodes.length; i++) {
+				stored[i] = +nodes[i].value;
+			}
+			localStorage.setItem(id, JSON.stringify(stored));
+			button.innerHTML = 'Response saved';
+			setTimeout(function(){button.innerHTML = button.dataset.strValue}, 4567);
+			check();
+		}
+
+		function load() {
+			stored = localStorage.getItem(id) ? JSON.parse(localStorage.getItem(id)) : null;
+			if (null === stored) {
+				stored = [];
+				for (var i=0; i<rows.length; i++) { stored.push(0); }
+			}
+			for (var i=0; i<rows.length; i++) {
+				if (stored[i]>0) {
+					var node = document.querySelector("table tbody tr:nth-child(" + (i+1) + ") input[value='" + stored[i] + "']");
+					if (node) node.setAttribute("checked", true);
+				}
+			}
+		}
+
+		function check() {
+			if (Array.from(document.querySelectorAll("input:checked")).length === rows.length) {
+				var trs = document.querySelectorAll("table tbody tr");
+				for (var i=0; i<trs.length; i++) {
+					var req = (+trs[i].dataset.required)+1;
+					console.log(i,req,trs[i].querySelector("td:nth-child(" + req + ")"));
+					trs[i].querySelector("td:nth-child(" + req + ")").classList.add("correct");
+				}
+			}
+		}
+
+		document.body.addEventListener("change", function(e) {
+			var checked = document.querySelectorAll("input:checked");
+			if (checked.length === rows.length) {
+				document.querySelector("button").removeAttribute("class");
+			}
+
+		}, false);
+
+		window.addEventListener("load", function () {
+		  var urlParams = new URLSearchParams(window.location.search);
+		  id = urlParams.get("id") || "radios";
+
+		  button = document.querySelector("button");
+		  button.dataset.strValue = button.innerHTML;
+
+		  load();
+		  check();
+
+		  button.addEventListener("click", save);
+
+		  // try to match background colour to block in Rise
+		  if (window.parent !== window.self && !isCrossDomain()) { // in an iframe on the same domain
+		  	try {
+window.document.documentElement.style.backgroundColor = window.getComputedStyle(parent.document.querySelector("iframe[src='" + location.href + "']").closest('.block-embed')).backgroundColor;
+			} catch (e) {
+				// oh well
+			}
+		  }		  
+
+		});
+
+		function isCrossDomain() {
+			try {
+				window.parent.document;
+			} catch (e) {
+				return true;
+			}
+			return false;
+		}
+	</script>
+</body>
+</html>
