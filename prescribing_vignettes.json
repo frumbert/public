@@ -104,15 +104,15 @@
 	"type":"radio",
 	"horizontal":false,
 	"responses": [
-		{"label":"Increase Mike’s dose to 20 mg four hourly", "required": false},
+		{"label":"Increase Mike’s dose to 20mg four hourly", "required": false},
 		{"label":"Discuss changing to a modified release opioid", "required": false},
 		{"label":"Refer Mike back to the surgeon who performed his operation", "required": false},
-		{"label":"Investigate Mike’s pain further with a comprehensive assessment to assess his needs and risks.", "required": false},
+		{"label":"Investigate Mike’s pain further with a comprehensive assessment to assess his needs and risks", "required": false},
 		{"label":"None of the above", "required": false}
 	],
 	"feedback": {
 		"heading":"Suggested action",
-		"content":"<p>Mike should be assessed further with a full comprehensive assessment to assess his needs and risks.</p><p>In particular, consider specialist advice for patients with complex needs at high risk of harm from opioids. In this case, specialist advice is recommended because he</p><ul><li>is taking > 60 mg OMEDD</li><li>has been using an opioid for > 90 days.</li></ul>"
+		"content":"<p>Mike should be assessed further with a full comprehensive assessment to assess his needs and risks.</p><p>In particular, consider specialist advice for patients with complex needs at high risk of harm from opioids. In this case, specialist advice is recommended because he:</p><ul><li>is taking > 60mg OMEDD</li><li>has been using an opioid for > 90 days.</li></ul>"
 	}
 }
 ]
