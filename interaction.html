@@ -140,7 +140,8 @@
 			  d.classList.add("uk-grid");
 			}
 
-			endNode.insertAdjacentElement("beforebegin", d);
+			console.log('inserting',d,'before',endNode);
+		      endNode.insertAdjacentElement("beforebegin", d);
 
 			switch (value.type) {
 			  case "radio":
