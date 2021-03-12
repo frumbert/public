@@ -74,7 +74,7 @@
 	"type":"radio",
 	"horizontal":false,
 	"responses": [
-		{"label":"Give Jamie a prescription for a short supply of ocycodone at the same dose and route supplied by the hospital", "required": false},
+		{"label":"Give Jamie a prescription for a short supply of oxycodone at the same dose and route supplied by the hospital", "required": false},
 		{"label":"Do not write a prescription for an opioid, but give Jamie instructions to manage her pain with paracetamol and NSAIDs", "required": false},
 		{"label":"Give Jamie a script for a weaker opioid", "required": false},
 		{"label":"None of the above", "required": false}
@@ -89,7 +89,7 @@
 	"type":"radio",
 	"horizontal":false,
 	"responses": [
-		{"label":"Give Jamie a prescription for a short supply of ocycodone at the same dose and route supplied by the hospital", "required": false},
+		{"label":"Give Jamie a prescription for a short supply of oxycodone at the same dose and route supplied by the hospital", "required": false},
 		{"label":"Do not write a prescription for an opioid, but give Jamie instructions to manage her pain with paracetamol and NSAIDs", "required": false},
 		{"label":"Give Jamie a script for a weaker opioid", "required": false},
 		{"label":"None of the above", "required": false}
