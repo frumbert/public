@@ -1,6 +1,6 @@
 [
 {
-	"prompt":"Would you consider increasing Pam's dose of oxycodone?",
+	"prompt":"Is it appropriate to continue to prescribe opioids to Pam?",
 	"type":"radio",
 	"horizontal":true,
 	"responses": [
