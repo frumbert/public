@@ -62,11 +62,14 @@
 		    remove(document.querySelector(".uk-legend"));
 		  }
 
-		  if (localStorage.getItem(source)) {
+		response = [];
+		try {	
+		if (localStorage.getItem(source)) {
 		    response = JSON.parse(localStorage.getItem(source));
 		  } else {
 		    response = [];
 		  }
+		} catch (ex) { console.dir(ex);}
 
 		  fetch(source + ".json")
 		    .then(function (response) {
