@@ -36,6 +36,7 @@
 		  var db = [];
 		  var urlParams = new URLSearchParams(window.location.search);
 		  var source = urlParams.get('source');
+		  var legend = urlParams.get('legend') ? urlParams.get('legend') : 'References';
 		  var indexes = urlParams.get('indexes') ? urlParams.get('indexes').split(',').map(function (n) {
 		    return Number(n) - 1;
 		  }) : null;
@@ -45,6 +46,9 @@
 		  var content = document.getElementById('content');
 		  var link = definition.querySelector("a");
 		  link.textContent = linkLabel;
+			
+		  var lbl = document.querySelector('legend.uk=legend');
+		  lbl.textContent = legend;
 
 		  if (null === source) {
 		    return notfound();
