@@ -8,51 +8,58 @@
 		<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/css/uikit.min.css" />
 		<style>
-		html {background-color: #d9e6f0;}
-		.uk-tab {gap: .5rem;}
-		.uk-tab li:not(.uk-active) {background-color:rgba(255,255,255,.25);}
-		.uk-tab .uk-active {background-color:#1e87f0;}
-		.uk-tab .uk-active a {color:white;}
+		html {background-color: white;height:100vh}
+		#buttons { display: grid; gap: .5rem; grid-template-columns: repeat(3, 1fr); width: 100%;  grid-auto-rows: minmax(3rem, auto); }
+		#buttons > div { border-radius: 5px; border: 1px solid #ccc; padding: .25rem; transition: all .3s  }
+		#buttons > div.uk-active { background-color: #0055a5; color: white; border-color: #0055a5 }
+		#buttons > div:not(.uk-active) { background-color: #0055a515;; color: #333333; }
+		#buttons > div:not(.uk-active):hover { background-color: #eeeeee; color: black; }
+		#buttons a { color: inherit; text-decoration: none; }
+		.wrapper {display:flex;flex-direction:column;justify-content:center;height:100vh;}
+		.center {display:flex;flex-direction:column;justify-content:center;text-align:center;}
+		.center>* {flex:1}
 		</style>
 	</head>
 
 	<body class="uk-overflow-hidden">
-		<div class="uk-section uk-padding">
-			<div class="uk-container uk-container-small">
-				<ul class="uk-child-width-expand uk-tab">
-				</ul>
+		<div class="wrapper">
+		<div class="uk-section uk-padding border">
+			<div class="uk-container uk-container-xsmall border">
+				<div class="uk-child-width-expand" id="buttons"></div>
 				<p class="uk-text-center">Please choose an option</p>
 			</div>
+		</div>
 		</div>
 		<script type="text/javascript">
 		window.addEventListener('DOMContentLoaded', function() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const source = urlParams.get('source') || window.location.pathname.substr(1);
             const stored = localStorage.getItem(source) || "";
-			const container = document.querySelector("ul");
+			const container = document.querySelector("#buttons");
 			const p = document.querySelector("p.uk-text-center");
 
 			let labels = urlParams.get('labels') || "True,False";
 			labels = labels.split(",");
-
 			for (let i = 0; i < labels.length; i++) {
 				const label = labels[i];
-				const li = document.createElement("li");
+				const div = document.createElement("div");
 				const a = document.createElement("a");
 				a.href = "#" + i;
 				a.textContent = label;
-				li.appendChild(a);
-				container.appendChild(li);
+				a.classList.add("center");
+				div.classList.add("center");
+				div.appendChild(a);
+				container.appendChild(div);
 
 				if (i == parseInt(stored.substr(1),10)) {
-					li.classList.add("uk-active");
+					div.classList.add("uk-active");
 					p.textContent = "Your answer has been saved";
 				}
 				a.addEventListener('click', function(e) {
 					e.preventDefault();
 					p.textContent = "Your answer has been saved";
 					localStorage.setItem(source, this.getAttribute("href"));
-					const c = e.target.closest("ul").children;
+					const c = container.children;
 					for (let i=0;i<c.length;i++) {
 						c[i].classList[c[i]==e.target.parentNode?"add":"remove"]("uk-active");
 					}
