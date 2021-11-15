@@ -36,12 +36,29 @@
 		</div>
 		</div>
 		<script type="text/javascript">
-		function getLocalStorage(value) {
+		function getLocalStorage(source) {
 			try {
-				return localStorage.getItem(value);
+				return localStorage.getItem(source);
 			} catch(e) {
 				console.dir(e);
-				return '';
+				try {
+					return document.cookie.match('(^|;)\\s*' + source + '\\s*=\\s*([^;]+)')?.pop() || '';
+				} catch (de) {
+					console.dir(de);
+				}
+			}
+			return '';
+		}
+		function setLocalStorage(source, value) {
+			try {
+				localStorage.setItem(source, value);
+			} catch(e) {
+				console.dir(e);
+				try {
+					document.cookie = source + '=' + value + '; path=/';
+				}  catch (de) {
+					console.dir(de);
+				}
 			}
 		}
 		window.addEventListener('DOMContentLoaded', function() {
@@ -71,12 +88,12 @@
 				}
 				a.addEventListener('click', function(e) {
 					e.preventDefault();
-					p.textContent = "Your answer has been saved";
-					localStorage.setItem(source, this.getAttribute("href"));
 					const c = container.children;
 					for (let i=0;i<c.length;i++) {
 						c[i].classList[c[i]==e.target.parentNode?"add":"remove"]("uk-active");
 					}
+					p.textContent = "Your answer has been saved";
+					setLocalStorage(source, this.getAttribute("href"));
 				});
 			}
 
