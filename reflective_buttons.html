@@ -36,10 +36,18 @@
 		</div>
 		</div>
 		<script type="text/javascript">
+		function getLocalStorage(value) {
+			try {
+				return localStorage.getItem(value);
+			} catch(e) {
+				console.dir(e);
+				return '';
+			}
+		}
 		window.addEventListener('DOMContentLoaded', function() {
 			const urlParams = new URLSearchParams(window.location.search);
 			const source = urlParams.get('source') || window.location.pathname.substr(1);
-            const stored = localStorage.getItem(source) || "";
+            const stored = getLocalStorage(source) || "";
 			const container = document.querySelector("#buttons");
 			const p = document.querySelector("p.uk-text-center");
 
