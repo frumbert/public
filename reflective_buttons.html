@@ -13,7 +13,8 @@
 		<style>
 		html {background-color: white;height:100vh;}
 		body { font-family:'Raleway',sans-serif; }
-		#buttons { display: grid; gap: .5rem; grid-template-columns: repeat(3, 1fr); width: 100%;  grid-auto-rows: minmax(3rem, auto); }
+		#buttons { display: grid; gap: .5rem; width: 100%;  grid-auto-rows: minmax(3rem, auto); grid-template-columns: repeat(3, 1fr); }
+		#buttons.mod2 { grid-template-columns: repeat(2, 1fr); }
 		#buttons > div { border-radius: 5px; border: 1px solid #ccc; padding: .25rem; transition: all .3s  }
 		#buttons > div.uk-active { background-color: #0055a5; color: white; border-color: #0055a5 }
 		#buttons > div:not(.uk-active) { background-color: #0055a515;; color: #333333; }
@@ -44,6 +45,7 @@
 
 			let labels = urlParams.get('labels') || "True,False";
 			labels = labels.split(",");
+			if (labels.length % 2 === 0) container.classList.add("mod2");
 			for (let i = 0; i < labels.length; i++) {
 				const label = labels[i];
 				const div = document.createElement("div");
