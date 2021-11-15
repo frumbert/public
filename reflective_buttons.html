@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-gb" dir="ltr">
+
+	<head>
+	   <title>Reflective Choices</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/css/uikit.min.css" />
+		<style>
+		html {background-color: #d9e6f0;}
+		.uk-tab {gap: .5rem;}
+		.uk-tab li:not(.uk-active) {background-color:rgba(255,255,255,.25);}
+		.uk-tab .uk-active {background-color:#1e87f0;}
+		.uk-tab .uk-active a {color:white;}
+		</style>
+	</head>
+
+	<body class="uk-overflow-hidden">
+		<div class="uk-section uk-padding-remove-vertical">
+			<div class="uk-container uk-container-small">
+				<ul class="uk-child-width-expand uk-tab">
+				</ul>
+				<p class="uk-text-center">Please choose an option</p>
+			</div>
+		</div>
+		<script type="text/javascript">
+		window.addEventListener('DOMContentLoaded', function() {
+			const urlParams = new URLSearchParams(window.location.search);
+			const source = urlParams.get('source') || window.location.pathname.substr(1);
+            const stored = localStorage.getItem(source) || "";
+			const container = document.querySelector("ul");
+			const p = document.querySelector("p.uk-text-center");
+
+			let labels = urlParams.get('labels') || "True,False";
+			labels = labels.split(",");
+
+			for (let i = 0; i < labels.length; i++) {
+				const label = labels[i];
+				const li = document.createElement("li");
+				const a = document.createElement("a");
+				a.href = "#" + i;
+				a.textContent = label;
+				li.appendChild(a);
+				container.appendChild(li);
+
+				if (i == parseInt(stored.substr(1),10)) {
+					li.classList.add("uk-active");
+					p.textContent = "Your answer has been saved";
+				}
+				a.addEventListener('click', function(e) {
+					e.preventDefault();
+					p.textContent = "Your answer has been saved";
+					localStorage.setItem(source, this.getAttribute("href"));
+					const c = e.target.closest("ul").children;
+					for (let i=0;i<c.length;i++) {
+						c[i].classList[c[i]==e.target.parentNode?"add":"remove"]("uk-active");
+					}
+				});
+			}
+
+        });
+    </script>
+	</body>
+</html>
