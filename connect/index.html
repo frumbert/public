@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <title>connect</title>
+
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+            <link href="https://unpkg.com/normalize.css" type="text/css" rel="stylesheet" />
+
+            <style>
+:root {
+	--text-fg: #222;
+	--text-size: 20px;
+	--button-bg: #31b7f9;
+	--button-bg-alpha-10: rgba(49, 183, 249, .1);
+	--button-bg-alpha-50: rgba(49, 183, 249, .5);
+	--button-bg-light: #a6dffc;
+	--body-bg: #f8f8f8;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: var(--text-size);
+  font-family:-apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Ubuntu, Roboto, Noto, "Segoe UI", Arial, sans-serif;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+* {
+    text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body,html{
+	margin:0;
+	padding:0;
+	border:none;
+	height:100%;
+}
+body {
+	letter-spacing:.01rem;
+	line-height:1.8;
+	font-size:1rem;
+	font-weight:400;
+	font-family:"Nunito Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+	letter-spacing:.01rem;
+	text-shadow:1px 1px 1px rgba(0,0,0,.004);
+	color:var(--text-fg);
+	min-height: 100vh;
+	background-color: var(--body-bg);
+}
+h1,h2,h3,h4,h5,h6{font-family:Montserrat,sans-serif;font-weight:300;line-height:1.2;margin:0}
+h1{font-size:3rem;letter-spacing:.025rem}
+h2{font-size:2.5rem}
+h3{font-size:2rem}
+h4{font-size:1.75rem}
+h5{font-size:1.5rem}
+h6{font-size:1.25rem}
+
+body > img {
+	width: 8rem;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
+	object-fit: cover;
+	object-position: right top;
+}
+
+button {
+	font-family: Montserrat,sans-serif;
+	font-weight: 300;
+	line-height: 1.2;
+	padding: .75rem 1.25rem;
+	margin: 0;
+	background-color: white;
+	border: none;
+	border-radius: .25rem;
+	cursor: pointer;
+	background-color: var(--button-bg);
+	color:  white;
+	box-shadow: 0 0 1rem rgba(0,0,0,.1);
+
+	background-position: center;
+	transition: background 0.8s, color .3s;
+
+	outline: none;
+
+}
+button:hover  {
+	background: var(--button-bg-light) radial-gradient(circle, transparent 1%, var(--button-bg-light) 1%) center/15000%;
+}
+button:active {
+	background-color: var(--button-bg);
+	background-size: 100%;
+	transition: background 0s;
+}
+
+
+.flex-row {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-4 {
+	flex: 40;
+}
+.flex-2 {
+	flex: 20;
+}
+
+.first {
+	order: -1;
+}
+
+.padding {
+	padding: 2rem 4rem;
+}
+
+.boxes {
+	box-shadow: 0 0 2rem rgba(0,0,0,.1);
+	border-radius: .25rem;
+}
+.boxes > div {
+	background-color: white;
+	border: 1px solid rgba(0,0,0,.125);
+	margin-bottom: -1px;
+	min-height: 3rem;
+}
+.boxes > div:first-of-type {
+	border-radius: .25rem .25rem 0 0;
+}
+.boxes > div:last-of-type {
+	border-radius: 0 0 .25rem .25rem;
+	margin-bottom: 0;
+}
+.boxes > div > span {
+	padding: .75rem 1.25rem;
+	display: block;
+}
+.boxes > div > img {
+	width: 100%;
+	max-height: 9rem;
+	object-fit: contain;
+	display: block; /* important to prevent bottom margin, vertical-align: top; also works */
+	text-align: left;
+}
+
+#connectors {
+	position: relative;
+	height: 100%;
+}
+#connectors .hint {
+	position: absolute;
+	width: 1rem;
+	height: 1rem;
+	z-index: 1;
+}
+.hint::before {
+	position: absolute;
+	content: '';
+	display: block;
+	left: .4rem;
+	top: .4rem;
+	background-color: var(--button-bg-light);
+	border-radius: 50px;
+	width: .2rem;
+	height: .2rem;
+}
+.hint::after {
+	position: absolute;
+	border-radius: 100rem;
+    content: '';
+    border: 1px solid var(--button-bg-light);
+    width: 1rem;
+    height: 1rem;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    transform: scale(0);
+    display: block;
+    opacity: 1;
+}
+#connectors .connector {
+	position: absolute;
+	background-color: var(--button-bg);
+	width: 1rem;
+	height: 1rem;
+	border-radius: 50px;
+}
+#connectors .connector.start {
+	background-color: var(--button-bg-light);
+	z-index: 2;
+}
+#connectors .connector.end {
+	left: .25rem;
+	z-index: 3;
+}
+#line-wrapper {
+	width: 0;
+	height: 0;
+	position: relative;
+}
+#connectors.drop-hint .hint::after {
+	animation: puddle 2s ease infinite;
+}
+
+@keyframes puddle {
+	100% {
+		transform: scale(3);
+		opacity: 0;
+	}
+}
+
+.check {
+	margin: 1rem 0;
+	text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+	:root {
+		--text-size: 16px;
+	}
+}
+
+@media screen and (max-width: 1024px) {
+	:root {
+		--text-size: 16px;
+	}
+}
+
+table.t, table.t td, table.t th { border:1px solid #eee; border-collapse:collapse; text-align: left }
+table.t th { background-color: #eee;}
+            </style>
+
+            <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:200,300,400,600,700" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+            <script src="https://unpkg.com/leader-line"></script>
+            <script src="https://unpkg.com/plain-draggable"></script>
+            <script src="https://unpkg.com/anim-event"></script>
+
+
+    </head>
+
+    <body>
+        <section class="padding">
+            <h1>Connect the items</h1>
+            <p>Drag connections between these items.</p>
+            <div class="flex-row">
+                <div class="flex-4">
+                    <h3>Flavours</h3>
+                    <div id="plugs" class="boxes">
+                        <div><span>Grape</span></div>
+                        <div><span>Vanilla</span></div>
+                        <div><span>Chocolate, but not that horrible stuff that Cadbury make</span></div>
+                        <div><img src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"></div>
+                        <div><span>Lemon</span></div>
+                        <div><span>Lime like you get in the packets of Starburst snakes</span></div>
+                    </div>
+                </div>
+                <div class="flex-2">
+                    <div id="connectors">
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+
+                        <div class="connector start"></div>
+                        <div class="connector end"></div>
+                    </div>
+                    <div id="line-wrapper"></div>
+                </div>
+                <div class="flex-4">
+                    <h3>Colours</h3>
+                    <div id="sockets" class="boxes">
+                        <div data-value="4"><span>Brown</span></div>
+                        <div data-value="32"><span>Green</span></div>
+                        <div data-value="8"><img src="https://images.unsplash.com/photo-1527856263669-12c3a0af2aa6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"></div>
+                        <div data-value="1"><span>Purple</span></div>
+                        <div data-value="2"><span>Represented as a creamy white colour, even though the actual product is black</span></div>
+                        <div data-value="16"><span>Yellow</span></div>
+                    </div>
+                </div>
+            </div>
+			<div class="check">
+				<button>Check answer</button>
+			</div>
+            <dialog id="feedbackDialog">
+                <div id="feedback"></div>
+                <form method="dialog">
+                <menu><button value="cancel">Close</button></menu>
+                </form>
+            </dialog>
+        </section>
+
+<script>
+
+// terminology: a Plug is inserted into a Socket
+// plugins and sockets are point objects consisting of an X and Y position relative to the container
+
+const computedStyle = getComputedStyle(document.documentElement);
+
+const connectorsNode = document.getElementById("connectors");
+const connectors = connectorsNode.querySelectorAll(".connector.start");
+const lineWrapper = document.getElementById("line-wrapper");
+
+let current_connections = [], ends = [], snaptargets = [];
+const check_button = document.querySelector(".check>button");
+
+// gather a list of the plug nodes (left)
+const plugs = document.getElementById("plugs");
+const plugPosition = plugs.getBoundingClientRect().y - plugs.previousElementSibling.getBoundingClientRect().height; // div position - header height
+
+// randomise the order of the dom nodes for the sockets (right)
+const sockets = document.getElementById("sockets");
+for (var i = sockets.children.length; i >= 0; i--)
+    sockets.appendChild(sockets.children[Math.random() * i | 0]);
+
+const socketPosition = sockets.getBoundingClientRect().y - sockets.previousElementSibling.getBoundingClientRect().height; // looks wrong but we are looking for a negaitve offset
+
+function remToPx(rem) {
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
+
+function wrapperPosition() {
+    lineWrapper.style.transform = 'none';
+    const rect = lineWrapper.getBoundingClientRect();
+    lineWrapper.style.transform = 'translate(' +
+        (-(rect.left + pageXOffset)) + 'px, ' +
+        (-(rect.top + pageYOffset)) + 'px)';
+}
+
+// the snap target coordinates may have changed
+// recalculate based on the position inside the container
+// then apply the updated snap targets to the existint nodes
+function resize() {
+    // recalculate the new centres for each snap
+
+    // move the start positions to the new centres
+
+    // move the snapped position ends to meet the new end positions
+
+    // update the drawn lines
+}
+
+function init() {
+    wrapperPosition();
+    let lastDraggedFrom, isSnapped;
+    for (let i=0;i<connectors.length;i++) current_connections[i] = -1; // snapindex[i]=plug, value=socket
+    Array.from(connectors).forEach(function(start, index) {
+
+        // connectors come in pairs
+        const end = start.nextElementSibling;
+
+        const plug = plugs.children[index];
+        const p_position = plug.getBoundingClientRect();
+        const p_midpoint = (p_position.y - plugPosition) + (p_position.height / 2);
+        start.style.top = "calc(" + p_midpoint + "px - .5rem)";
+        end.style.top = "calc(" + p_midpoint + "px - .5rem)";
+
+        const socket = sockets.children[index];
+        const s_position = socket.getBoundingClientRect();
+        const s_midpoint = (s_position.y - socketPosition) + (s_position.height / 2);
+
+        const div = document.createElement("div");
+        const snaptarget = {
+            element: div,
+            x: (connectorsNode.offsetWidth - remToPx(.5)),
+            y: s_midpoint,
+            i: index
+        }
+        div.classList.add("hint");
+        div.style.top = snaptarget.y - remToPx(.5) + 'px';
+        div.style.right = 0;
+        // div.style.left = snaptarget.x + 'px'; // - remToPx(.5) // 'calc(' + snaptarget.x + 'px - .125rem)';
+        connectorsNode.appendChild(div);
+
+        snaptargets.push(snaptarget);
+
+        const line = new LeaderLine(start, end, {
+            startPlug: 'none',
+            startPlugColor: computedStyle.getPropertyValue('--button-bg-alpha-10'),
+            endPlugColor: computedStyle.getPropertyValue('--button-bg-alpha-50'),
+            gradient: true,
+            path: 'fluid',
+            startSocket: 'right',
+            endSocket: 'left',
+            hide: true,
+            dropShadow: { dx:0, dy: 2, blur: 3, opacity: .2}
+        });
+
+        const draggable = new PlainDraggable(end, {
+            onMove: function (el) {
+                wrapperPosition();
+                line.position();
+                isSnapped = !!el.snapped;
+            },
+            onMoveStart: function () {
+                line.show('draw', {
+                    duration: 500,
+                    timing: 'ease-in'
+                });
+            },
+            onDragStart: function (obj) {
+                lastDraggedFrom = obj;
+                line.dash = { animation: true };
+                connectorsNode.classList.add("drop-hint");
+            },
+            onDragEnd: function (newPosition) {
+                const bb = this.containment.getBoundingClientRect();
+                const tolerance = remToPx(1.5); // must be less than possible overlap between snaptargets
+                var dropped = snaptargets.find(function(target) {
+                    const xpos = newPosition.left - bb.x;
+                    const ypos = newPosition.top - bb.y;
+                    return (Math.abs(target.x - xpos) < tolerance) && (Math.abs(target.y - ypos) < tolerance);
+                });
+                const occupied = dropped && current_connections.includes(dropped.i);
+                if (!isSnapped || occupied) {
+                    lastDraggedFrom.target.style.transform = 'none';
+                    line.hide('draw',{duration:100});
+                    this.position(); // absurdly named method for resetting the drag coordinates
+                    current_connections[index] = -1;
+                } else {
+                    current_connections[index] = dropped ? dropped.i : -1;
+                }
+                lastDraggedFrom = undefined;
+                line.dash = false;
+                connectorsNode.classList.remove("drop-hint");
+            },
+            autoScroll: true
+        });
+
+        ends.push(draggable);
+    });
+
+    // assign all draggables the same set of snaptargets
+    ends.map(function(obj) {
+        obj.snap = {
+            targets: snaptargets.map(function(o) { return o.element }),
+            center: false,
+            gravity: remToPx(1),
+            corner: 'all',
+        }
+    });
+}
+
+window.addEventListener('scroll', AnimEvent.add(resize), false);
+
+window.addEventListener('load', init, false);
+
+check_button.addEventListener('click', function () {
+    feedback.innerHTML = `<h4>Your answers</h4>
+        <table class='t'><tr><th>Index</th><th>Plug</th><th>Socket</th><th>Response index</th><th>Connection</th></tr>
+        ` + current_connections.map(function(obj, index) {
+
+        let plug = plugs.children[index].textContent;
+
+        let possible = Array.from(sockets.children).find(function(node, item) {
+            // console.log(node,index,item,Number(node.dataset.value),Math.pow(2,index), 1 << index);
+            return Number(node.dataset.value) === 1 << index;
+        });
+
+        let actual = obj > -1 ? sockets.children[obj].textContent : "not-set";
+
+        console.log(possible);
+
+        let socket = possible.textContent;
+
+        const str = `<tr><td>${index}</td><td>${plug}</td><td>${socket}</td><td>${obj}</td><td>${actual}</td></tr>`;
+
+        return str;
+
+    }).join("") + `
+        </table>
+        `;
+
+    document.getElementById('feedbackDialog').showModal();
+}, false);
+
+
+</script>
+
+    </body>
+</html>
