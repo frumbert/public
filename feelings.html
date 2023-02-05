@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feelings</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Inter&display=swap">
+    <style>
+    *{font-family:Inter,'Open Sans',sans-serif;}
+    label{display:block;}
+    body{margin:0;background:white;color:#333}
+    table{width:100%;border-collapse: collapse;}
+    table,th,td {border:1px solid #ccc;}
+    th,label, output{padding:1rem;}
+    thead th, td{text-align:center;}th{text-align:left;font-weight:normal;background-color:#f8f8f8}
+    thead th { color: #999; }
+    tfoot th { padding: 0 }
+    output { display: block; border-top: 2px solid #ccc; color: black; text-align: center;}
+    thead th.hover { color: black; background-color: #d8d8d8 }
+    </style>
+  </head>
+  <body>
+    <table class="fr-alternate-rows">
+      <thead>
+        <tr>
+          <th>Statement</th>
+          <th>Agree</th>
+          <th>Sometimes</th>
+          <th>Never</th>
+        </tr>
+      </thead><tbody>
+        <tr>
+          <th colspan="4">
+            I worry that I’m not effective when communicating with my supervisor
+            / colleagues / peers
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r1" checked></label></td>
+          <td><label><input type="radio" name="r1" data-col="1"></label></td>
+          <td><label><input type="radio" name="r1" data-col="2"></label></td>
+          <td><label><input type="radio" name="r1" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I worry that my comments may be viewed as abrupt / gruff / off-hand
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r2" checked></label></td>
+          <td><label><input type="radio" name="r2" data-col="1"></label></td>
+          <td><label><input type="radio" name="r2" data-col="2"></label></td>
+          <td><label><input type="radio" name="r2" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I don’t always make myself fully understood when giving instructions
+            to other members of the team
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r3" checked></label></td>
+          <td><label><input type="radio" name="r3" data-col="1"></label></td>
+          <td><label><input type="radio" name="r3" data-col="2"></label></td>
+          <td><label><input type="radio" name="r3" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I don’t concern myself with what people think about my comments
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r4" checked></label></td>
+          <td><label><input type="radio" name="r4" data-col="1"></label></td>
+          <td><label><input type="radio" name="r4" data-col="2"></label></td>
+          <td><label><input type="radio" name="r4" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I’m nervous or slightly anxious / self-conscious in my
+            consultations, especially with new patients or if I am being
+            observed by an experienced colleague
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r5" checked></label></td>
+          <td><label><input type="radio" name="r5" data-col="1"></label></td>
+          <td><label><input type="radio" name="r5" data-col="2"></label></td>
+          <td><label><input type="radio" name="r5" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I worry that people think that I don’t know what I’m doing
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r6" checked></label></td>
+          <td><label><input type="radio" name="r6" data-col="1"></label></td>
+          <td><label><input type="radio" name="r6" data-col="2"></label></td>
+          <td><label><input type="radio" name="r6" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I often wonder whether my colleagues think I’m not very smart or
+            just sometimes guessing when formulating a diagnosis
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r7" checked></label></td>
+          <td><label><input type="radio" name="r7" data-col="1"></label></td>
+          <td><label><input type="radio" name="r7" data-col="2"></label></td>
+          <td><label><input type="radio" name="r7" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">At times I speak quietly or am afraid to speak up</th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r8" checked></label></td>
+          <td><label><input type="radio" name="r8" data-col="1"></label></td>
+          <td><label><input type="radio" name="r8" data-col="2"></label></td>
+          <td><label><input type="radio" name="r8" data-col="3"></label></td>
+        </tr>
+        <tr>
+          <th colspan="4">
+            I have no idea how well my support team communicate with my patients
+          </th>
+        </tr>
+        <tr>
+          <td><label><input type="radio" name="r9" checked></label></td>
+          <td><label><input type="radio" name="r9" data-col="1"></label></td>
+          <td><label><input type="radio" name="r9" data-col="2"></label></td>
+          <td><label><input type="radio" name="r9" data-col="3"></label></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+      </tfoot>
+    </table>
+    <script type="text/javascript">
+    let theadtr;
+    window.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('table').addEventListener('mouseover', mouseover);
+        document.querySelector('table').addEventListener('mouseout', mouseout);
+        document.querySelector('table').addEventListener('change', tally);
+        theadtr = document.querySelector('thead>tr').children;
+        tally();
+    });
+    function mouseover(event) {
+        const target = event.target;
+        const td = target.closest('td');
+        if (td) {
+            const tr = td.parentNode;
+            let index = Array.prototype.indexOf.call(tr.children, td);
+            for (let i=0;i<theadtr.length;i++) {
+                theadtr[i].classList[i===index?'add':'remove']('hover');
+            }
+        }
+    }
+    function mouseout(event) {
+        for (th of theadtr) th.classList.remove('hover');
+    }
+    function tally() {
+        const tr = document.querySelector('tfoot>tr');
+        tr.children[1].innerHTML = `<output>${document.querySelectorAll('[data-col="1"]:checked').length}</output>`;
+        tr.children[2].innerHTML = `<output>${document.querySelectorAll('[data-col="2"]:checked').length}</output>`;
+        tr.children[3].innerHTML = `<output>${document.querySelectorAll('[data-col="3"]:checked').length}</output>`;
+    }
+    </script>
+  </body>
+</html>
