@@ -35,6 +35,7 @@
 			const rgba = (hex = hex.replace('#', '')).match(new RegExp('(.{' + hex.length/(hex.length==8?4:3) + '})', 'g')).map(function(l) { return parseInt(hex.length%2 ? l+l : l, 16) }).concat(hex.length===8?'':isFinite(opacity) ? opacity : 1).join(',').replace(/,$/,'').split(',')
 			return (0.2126 * rgba[0]) + (0.7152 * rgba[1]) + (0.0722 * rgba[2]) >= 165 ? 'black' : 'white';
 		}
+		function c(value) { return (value.indexOf('#')===-1?'#':'')+value; }
 
 		function save() {
 			if (textarea.value.trim().length) {
@@ -52,7 +53,6 @@
 			if (textarea.value.length > 0) button.removeAttribute("disabled");
 		}
 		function css(key,value) {
-			console.log(key,value);
 			document.querySelector(':root').style.setProperty(`--${key}`,value);
 		}
 
@@ -64,9 +64,10 @@
 			const urlParams = new URLSearchParams(window.location.search);
 			console.dir(urlParams);
 			id = urlParams.get("id");
+			width = urlParams.get("w"); if (width.length) textarea.style.maxWidth = width + 'px';
 			placeholder = urlParams.get("q");
-			background = urlParams.get("bg"); if (background.length) { css("background", '#'+background); css("foreground",bw(background)); }
-			accent = urlParams.get("fg"); if (accent.length) { css("accent", '#'+accent); css("accentText", bw(accent)); }
+			background = urlParams.get("bg"); if (background.length) { css("background", c(background)); css("foreground",bw(background)); }
+			accent = urlParams.get("fg"); if (accent.length) { css("accent", c(accent)); css("accentText", bw(accent)); }
 		  
 			if (placeholder.trim().length) textarea.setAttribute("placeholder", placeholder);
 
