@@ -10,7 +10,7 @@
 <form method="get">
     <input type="hidden" name="w" value="800">
     <p><textarea cols="80" rows="5" name="q"></textarea></p>
-    <p>Background: <input type="color" value="#ffffff" name="bg"> Accent: <input type="color" value="#21409a" name="fg"> </p>
+    <p>Background: <input type="color" value="#ffffff" name="bg"> Accent: <input type="color" value="#21409a" name="fg"> Height: <input type="number" min="100" max="2000" step="10" value="200" name="h" size="5"> </p>
     <p><output></output></p>
     <p><button type="submit">Make</button></p>
 </form>
@@ -20,12 +20,15 @@ const crc32=function(r){for(var a,o=[],c=0;c<256;c++){a=c;for(var f=0;f<8;f++)a=
 const q = urlParams.get('q');
 const bg = urlParams.get('bg');
 const fg = urlParams.get('fg');
+const h = urlParams.get('h') || 200;
+urlParams.delete('h');
 document.querySelector("[name=q]").value = q;
 document.querySelector("[name=bg]").value = bg;
 document.querySelector("[name=fg]").value = fg;
+document.querySelector("[name=h]").value = h;
 urlParams.set('id', 'inp'+crc32(q));
 let str = urlParams.toString();
-document.querySelector("output").textContent = `<iframe src="https://frumbert.github.io/public/textarea.html?${str}" width="100%" height="200" seamless></iframe>`;
+document.querySelector("output").textContent = `<iframe src="https://frumbert.github.io/public/textarea.html?${str}" width="100%" height="${h}" seamless></iframe>`;
 </script>
 </body>
 </html>
