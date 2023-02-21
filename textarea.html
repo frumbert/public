@@ -36,7 +36,7 @@
 			<button disabled>Save</button>
 		</div>
 		<script type="text/javascript">
-		let textarea, button, id, placeholder, background, accent, label, div;
+		let textarea, button, id, placeholder, background, accent, label, div, width;
 
 		function bw(hex,opacity) {
 			const rgba = (hex = hex.replace('#', '')).match(new RegExp('(.{' + hex.length/(hex.length==8?4:3) + '})', 'g')).map(function(l) { return parseInt(hex.length%2 ? l+l : l, 16) }).concat(hex.length===8?'':isFinite(opacity) ? opacity : 1).join(',').replace(/,$/,'').split(',')
