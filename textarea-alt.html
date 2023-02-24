@@ -8,104 +8,31 @@
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
 		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 		<style>
-		:root {
-			--accent: #1cb360;
-			--accentText: white;
-			--foreground: black;
-			--background: #fafafa;
-		}
-		html,
-		body {
-			min-height: 100vh;
-			font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-			Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
-			'Segoe UI Emoji', 'Segoe UI Symbol';
-		}
-		html {
-			background-color: var(--background);
-		}
-		body {
-			margin: 0;
-			overflow: hidden;
-			overflow-y: auto;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			color: var(--foreground);
-		}
-		button,
-		textarea {
-			font-family: inherit;
-			border-radius: 3px;
-		}
-		label, textarea {
-			display: block;
-		}
-		label {
-			font-family: inherit;
-			width: calc(100% - 3rem);
-			padding: 1rem;
-			color: #000000c0;
-		}
-		button {
-			border: 1px solid #00000040;
-			background-color: var(--accent);
-			transition: all 0.2s;
-			padding: 0.5rem 1rem;
-			color: var(--accentText);
-			margin: 1rem 0;
-		}
-		button:hover,
-		button:active {
-			filter: brightness(1.75);
-			cursor: pointer;
-		}
-		button[disabled],
-		button[disabled]:hover,
-		button[disabled]:active {
-			opacity: 0.5;
-			pointer-events: none;
-		}
-		body > div {
-			flex: 1;
-			margin-top:1rem;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			position: relative;
-			width: 100%;
-		}
-		div.input {
-			box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.1);
-			flex: 1;
-			width: calc(100% - 3rem);
-			background-color: white;
-			border-left: 4px solid var(--accent);
-			border-radius: 0.3rem;
-			display: flex;
-			flex-direction: column;
-		}
-		textarea {
-			flex: 1;
-			resize: none;
-			outline: none;
-			padding: 0.5rem;
-			border: 1px solid #00000040;
-			margin: 0 1rem 1rem;
-		}
+			:root {
+				--accent: #1CB360;
+				--accentText: white;
+				--foreground: black;
+				--background: #fafafa;
+			}
+			html, body { min-height: 100vh; font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";  }
+			html { background-color: var(--background); }
+			body { margin: 0; overflow: hidden; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--foreground); }
+			button, textarea { font-family: inherit; border-radius: 3px;}
+			label { font-family: inherit; position: absolute; top: 1.5rem; left: 1.5rem; transition: 0.2s ease all; opacity: 1; width: calc(100% - 3rem);}
+			button { border: 1px solid #00000040; background-color: var(--accent); transition: all .2s; padding: .5rem 1rem; color: var(--accentText); margin: 1rem 0; }
+			button:hover, button:active { filter:brightness(1.75); cursor: pointer; }
+			button[disabled], button[disabled]:hover, button[disabled]:active { opacity: 0.5; pointer-events: none; }
+			div { flex:1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; width: 100% }
+			textarea { flex: 1; width: calc(100% - 3rem); resize: none; border: none; background-color: white; outline: none; box-shadow: 0 0 1.5rem rgba(0,0,0,.1); margin: 1rem 1rem 0; padding: .5rem; border-left:4px solid var(--accent); border-radius: .3rem; transition: all .2s; }
+			textarea:focus ~ label, textarea:not(:focus):valid ~ label { top: 1rem; left: 1rem; font-size: 75%; opacity: 0.8; }
+			textarea:focus, textarea:not(:focus):valid { margin-top: 3rem }
 		</style>
-
 	</head>
 
 	<body>
 		<div>
-			<div class="input">
-				<label></label>
-				<textarea required></textarea>
-			</div>
-			<div class="connector"></div>
+			<textarea required></textarea>
+			<label></label>
 			<button disabled>Save</button>
 		</div>
 		<script type="text/javascript">
