@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey</title>
+    <style>
+    div{margin-block-start: 1rem;}
+
+    [data-type='single'] label:first-of-type,
+    [data-type='matching'] > label:first-of-type,
+    [data-type='dropdown'] label:first-of-type,
+    [data-type='fillin'] label:first-of-type,
+    [data-type='numeric'] label:first-of-type,
+    [data-type='truefalse'] label:first-of-type {
+        display: block;
+    }
+    input[type='radio'][id$='_0'] { margin-inline-start: 0 }
+
+    [role='control-group'] { display: inline-block; margin-right: 1rem; }
+    [role='control-group'] label { display: block; }
+
+    [data-type='likert'], [data-type='likert'] td, [data-type='likert'] th {
+        border: 1px solid #00000040;
+        border-collapse: collapse;
+        text-align: center;
+        font-weight: normal;
+    }
+    [data-type='likert'] tbody th { text-align: right; }
+    [data-type='likert'] th, [data-type='likert'] td { padding: .3rem }
+
+    [data-type='label'] .header {
+        border-top: 1px dashed #00000040;
+        line-height: 2rem;
+        background: #f8f8f8;
+    }
+    [data-type='label'] > *:last-child {
+        border-bottom: 1px dashed #00000040;
+    }
+
+    </style>
+</head>
+<body>
+<h1>Abstract survey.</h1>
+<p>There is no concept of numbered questions, only responses. Statements can be grouped by dichotomy. Lines without a type are ignored. Empty lines are reported as empty. There is no concept of required items or paged results. Results are in the format statement:answer or statement:answer1,answer2,answerN. The suervey is generated from the data below.</p>
+<textarea rows="5" cols="100">
+
+truefalse:[Oui,Non]
+I am fluent in <em>Le français</em>
+
+label:The choice presents several dichotomies which are idential for each choice row.
+
+choice:[ Dogs , Cats , Horses ,  , Mice ]
+Elephants are afraid of
+Cats are afraid of
+Mice are afraid of
+Dogs are afraid of
+
+label:Dropdowns can either be a single value, or multiple values.
+When using multiple dropdowns, each option can only be selected once.
+
+matching : [ Electricity=Light globes , Water=Faucets,  Alcohol = Drunkards, Sugar =Doughnuts]
+Match the item to its filling
+
+dropdown : [Wine,Beer,Tequila,Asprin,Caffiene]
+What is your vice?
+
+label : some regular form controls are supported too
+
+numeric:[50,100]
+How many roads can a man walk down?
+How long is a peice of string (in cm)
+What? This statement has no numeric value.
+
+fillin:[1]
+What is your name
+
+fillin:[5]
+Tell something personal about yourself
+
+label:everything that doesn't match is a comment. the first line of a label has a classname to differentiate it.
+labels are possible
+even multiline labels <strong>with tags</strong>.
+
+because this line doesn't start with the correct word, this isn't a label and should be ignored.
+
+The next tag is also ignored since it doesn't match to a known handler.
+
+bokers:[1,2,3]
+it looks like it should work
+doesn't it?
+
+label: Choices use checkboxes instead of radios and their answers are CSV
+
+choices:[Tracks,Roads,Streets,Avenues]
+Cities have
+Towns have
+Villages have
+
+likert
+
+likert:[Disagree,Neutral,Agree,]
+Purple is the best colour
+Cats are mind-controlling humans
+Water can be dehydrated
+
+label: It's just utf-8, so you can use emoji too:
+
+likert:[😂,😃,🤨,😟,😭]
+🌅
+🌌
+🏞
+
+</textarea>
+
+<pre id="output"></pre>
+
+<script type="text/javascript">
+window.addEventListener("DOMContentLoaded", () => {
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+    // var qs = new URLSearchParams(location.search);
+    // for (const p of qs) {
+    //     const d = document.querySelector(`[name=${p[0]}]`); console.log(`[name=${p[0]}]`,d);
+    //     if (d && d.value === p[1]) d.checked = true;
+    // }
+
+    const uid=function(){return ('q'+1e11).replace(/[018]/g, c =>(c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))}
+    const crc32=function(r){for(var a,o=[],c=0;c<256;c++){a=c;for(var f=0;f<8;f++)a=1&a?3988292384^a>>>1:a>>>1;o[c]=a}for(var n=-1,t=0;t<r.length;t++)n=n>>>8^o[255&(n^r.charCodeAt(t))];return(-1^n)>>>0};
+    const supportedTypes = ['likert','truefalse','choice','choices','matching','dropdown','numeric','choices','fillin','label'];
+    const input = document.querySelector("textarea"); // source, should be player.GetVar("TextEntry")
+
+    const form = document.createElement("form");
+    form.method = "GET";
+    form.innerHTML = "<p><input type='submit' name='action' value='submit'></p>"
+
+    const output = document.createDocumentFragment();
+    output.appendChild(form);
+
+    let regex = /^\s*\r?\n/gm; // start-of-line + optional whitespace + one-or-more newlines
+    const questions = input.value
+                        .split(regex) // raw input into blocks of lines
+                        .filter(((value) => { // validate each item
+                            return value.indexOf(':') !== -1 && supportedTypes.indexOf(value.split(":").map(s=>s.trim())[0]) !== -1; // filter to only supportedTypes
+                        }))
+                        .map((value) => { // convert valid strings to objects
+                            const [type,rest] = value.split(":", 2).map(s=>s.trim()); // type, and everything else
+                            const [dichotomies,...lines] = rest.split(/\r?\n/); // choices, and everything else as an array
+                            return {
+                                type,
+                                lines: lines.map(s=>s.trim()).filter(s=>s.length),
+                                dichotomies: dichotomies.replace(/^\[+|\]+$/g,'').split(',').map(s=>s.trim()).filter(s=>s.length).map(s=>{return s.indexOf("=")!==-1?s.split("=").map(t=>t.trim()):s}), // purpose: it's clear as mud
+                            }
+                        });
+
+    const inputs = [];
+    for (question of questions) {
+        let tag;
+        switch (question.type) {
+            case 'likert':
+                /*
+                value: each question has a col (bascially choice with a table layout)
+                            col    col    col
+                question    [x]    [o]    [o]     (hidden: n/a)
+                question    [x]    [o]    [o]     (hidden: n/a)
+                question    [o]    [o]    [x]     (hidden: n/a)
+                */
+                tag = [`<table data-type="likert"><thead><tr><td></td>`];
+                question.dichotomies.forEach(s=>{ tag.push(`<th>${s}</th>`); });
+                tag.push('</tr></thead><tbody>');
+                question.lines.forEach(line=>{
+                    const id = uid();
+                    const name = 'q'+crc32(line);
+                    tag.push(`<tr><th><input type='hidden' id="${id}" name="${name}" value="${line}">${line}</th>`);
+                    question.dichotomies.forEach((s,i)=>{
+                        tag.push(`<td><input type="radio" value="${s}" name="${name}"></td>`);
+                    });
+                    tag.push('</tr>');
+                    inputs.push(name);
+                });
+                tag.push('</tbody></table>');
+                form.appendChild(fragment(tag.join``));
+            break;
+
+            case 'truefalse':
+                /*
+                value: each question has one of two answers
+                question    [o] Oui    [x] Non     (hidden: n/a)
+                question    [x] Oui    [o] Non     (hidden: n/a)
+                */
+                for (line of question.lines) {
+                    tag = choice(line, question.dichotomies, 'truefalse');
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+            break; 
+
+            case 'choice':
+                /*
+                value: each question has an answer
+                question    [o] One    [x] Two  [o] Three     (hidden: n/a)
+                question    [o] One    [o] Two  [o] Three     (hidden: n/a)
+                */
+                for (line of question.lines) {
+                    tag = choice(line, question.dichotomies, 'single');
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+            break; 
+
+            case 'choices':
+                /*
+                value: each question has one or more answers
+                question     [x] One  [ ] Two   [ ] Three      (hidden: n/a)
+                question     [ ] One  [x] Two   [x] Three      (hidden: n/a)
+                */
+                for (line of question.lines) {
+                    tag = choices(line, question.dichotomies);
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+            break; 
+
+            case 'matching':
+                /*
+                value: how important are these items (each choice can be reused across questions)
+                question    [a    [v] [b   [v] 
+                            [1      ] [1     ]
+                            [2      ] [2     ]
+
+                */
+                for (line of question.lines) {
+                    tag = matching(line, question.dichotomies);
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+            break; 
+
+            case 'dropdown':
+                /*
+                value: how important are these items (each choice only available once across all questions
+                question    [b    [v]
+                            [c      ]
+                            [a      ]
+                */
+                for (line of question.lines) {
+                    tag = dropdown(line, question.dichotomies);
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+            break;
+
+            case 'numeric':
+                /*
+                value: each question has a numeric value
+                question    [n..m] 
+                question    [n..m] 
+                */
+                for (line of question.lines) {
+                    tag = numeric(line, question.dichotomies);
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+                break; 
+
+            case 'fillin':
+                /*
+                value: each question has a text response
+                question    [  ...  ] 
+                question    [
+                            ...
+                            ...
+                            ] 
+                */
+                for (line of question.lines) {
+                    tag = fillin(line, question.dichotomies);
+                    inputs.push(tag.name);
+                    form.appendChild(tag.node);
+                }
+                break; 
+
+            case 'label':
+                /*
+                value: none, just display
+                header
+                div
+                div
+                */
+                tag = label(question);
+                form.appendChild(tag.node);
+                break;
+
+            break;
+        }
+    }
+
+    document.body.appendChild(output);
+
+    function unique(value,index,array) {
+        return self.indexOf(value)===index;
+    }
+
+    function plain(text) {
+        const d = document.createElement('div');
+        d.innerHTML = text;
+        return d.textContent || '';
+    }
+
+    form.addEventListener('submit',e => {
+        e.preventDefault();
+        const source = new URLSearchParams(new FormData(form));
+        const fields = {};
+        for (const name of inputs) {
+            if (!name.length) continue;
+            const [fn,...opts] = source.getAll(name);
+            fields[plain(fn)] = opts.join();
+        }
+        console.log(fields); // SAVE this to a SCORM interaction
+        document.querySelector('#output').textContent = JSON.stringify(fields,null,4);
+        // ??
+    });
+
+    function fragment(string) {
+        var renderer = document.createElement('template');
+        renderer.innerHTML = string;
+        return renderer.content;
+    }
+
+    function label(question) {
+        let tag = [`<div data-type="label">`];
+        tag.push(`<div class='header'>${question.dichotomies.at(0)}</div>`);
+        for (line of question.lines) tag.push(`<div>${line}</div>`);
+        tag.push('</div>');
+        return { node: fragment(tag.join``) };    
+    }
+
+    function fillin(label,values) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        const value = values.map(s=>parseInt(s,10)).at(0);
+        let tag = [`<div data-type="fillin">`];
+        tag.push(`<input type='hidden' name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        if (value===1) {
+            tag.push(`<input id="${id}" type="text" name="${name}">`);
+        } else {
+            tag.push(`<textarea rows="${value}" cols="80" id="${id}" name="${name}"></textarea>`);
+        }
+        tag.push('</div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function numeric(label,values) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        const value = values.map(s=>parseInt(s,10)).reduce((a,b)=>a+b,0) / 2 >> 0; // find half-way between min and max as a whole number
+        let tag = [`<div data-type="numeric">`];
+        tag.push(`<input type='hidden' name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        tag.push(`<input id="${id}" type="number" value="${value}" min="${values[0]}" max="${values[1]}" name="${name}" size="${values[1].toString().length + 1}">`);
+        tag.push('</div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function choice(label,values,subtype) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        let tag = [`<div data-type="${subtype}">`];
+        tag.push(`<input type='hidden' id="${id}" name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        values.forEach((v,i) => {
+            tag.push(`<input type="radio" value="${v}" name="${name}" id="${id}_${i}"><label for="${id}_${i}">${v}</label>`);
+        });
+        tag.push('</div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function choices(label,values) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        let tag = ['<div data-type="multiple">'];
+        tag.push(`<input type='hidden' id="${id}" name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        values.forEach((v,i) => {
+            tag.push(`<input type="checkbox" value="${v}" name="${name}" id="${id}_${i}"><label for="${id}_${i}">${v}</label>`);
+        });
+        tag.push('</div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function matching(label,values) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        const left = values.map(s=>s[0]);
+        const right = values.map(s=>s[1]);
+        let tag = [`<div data-type="matching">`];
+        tag.push(`<input type='hidden' id="${id}" name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        left.forEach((v,i)=> {
+            tag.push(`<span role='control-group'>`);
+            tag.push(`<label for="${id}_${i}">${v}</label>`);
+            tag.push(`<select id="${id}_${i}" name="${name}" onchange='checkMatching(this)'>`);
+            tag.push(`<option value="">-</option>`);
+            right.map((item) => {
+                tag.push(`<option value="${item}">${item}</option>`);
+            });
+            tag.push('</select></span>');
+        });
+        tag.push('</div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function dropdown(label,values) {
+        const id = uid();
+        const name = 'q'+crc32(label);
+        let tag = [`<div data-type="dropdown">`];
+        tag.push(`<input type='hidden' name="${name}" value="${label}">`);
+        tag.push(`<label for="${id}">${label}</label>`);
+        tag.push(`<select id="${id}" name="${name}">`);
+        tag.push(`<option value="">-</option>`);
+        values.forEach((v,i) => {
+            tag.push(`<option value="${v}">${v}</option>`);
+        });
+        tag.push('</select></div>');
+        return { id, name, node: fragment(tag.join``) };
+    }
+
+    function quid() { // if it's worth doing, it's worth overdoing
+        return ('q'+1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }
+
+    // allow an option to be selected only once across multiple dropdowns
+    window.checkMatching = function(el) {
+        const values = [];
+        const siblings = Array.from(el.closest("[data-type='matching']").querySelectorAll("select"));
+        el.closest("[data-type='matching']").querySelectorAll("option").forEach(o=>o.removeAttribute('disabled'));
+        siblings.forEach(node => {
+            if (node.value.length) values.push(`option[value='${node.value}']`);
+        });
+        if (values.length) siblings.forEach(node => {
+            Array.from(node.querySelectorAll(values.join())).forEach(o => { !o.selected && o.setAttribute("disabled",true); });
+        });
+    }
+
+
+});
+</script>
+
+</body>
+</html>
