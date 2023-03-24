@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Map</title>
+    <style>div {border: 2px solid;
+  padding: 20px; 
+  width: 50%;
+  resize: both;
+  overflow: auto;} iframe { width:100%; height: 100%  }</style>
+</head>
+<body>
+<form method="get">
+    <p>NT: <input type="text" size="40" name="NT"></p>
+    <p>WA: <input type="text" size="40" name="WA"></p>
+    <p>NSW: <input type="text" size="40" name="NSW"></p>
+    <p>ACT: <input type="text" size="40" name="ACT"></p>
+    <p>SA: <input type="text" size="40" name="SA"></p>
+    <p>VIC: <input type="text" size="40" name="VIC"></p>
+    <p>QLD: <input type="text" size="40" name="QLD"></p>
+    <p>TAS: <input type="text" size="40" name="TAS"></p>
+    <p>Base colour: <input type="color" value="#4099d1" name="fill"> Hover: <input type="color" value="#15477e" name="link"></p>
+    <p><code></code></p>
+    <p><button type="submit">Make</button></p>
+</form>
+<div>
+<iframe width="100%" src="ausmap.html"></iframe>
+</div>
+
+<script>
+const code = document.querySelector('code');
+const outp = document.querySelector('iframe');
+const urlParams = new URLSearchParams(window.location.search);
+const outParams = new URLSearchParams();
+for (const [key, value] of urlParams.entries()) {
+    console.log('key',key,value, document.querySelector(`[name="${key}"]`));
+    if (document.querySelector(`[name="${key}"]`)) document.querySelector(`[name="${key}"]`).value = value;
+    if (value.length) {
+        outParams.set(key,value);
+    }
+}
+outp.src = "ausmap.html?" + outParams.toString();
+code.textContent = `<iframe src="https://frumbert.github.io/public/ausmap.html?${outParams.toString()}" width="100%" height="400" seamless></iframe>`;
+
+// ['fill','linl','NT','WA','NSW','ACT','SA','VIC','QLD','TAS'].forEach((v) => {
+
+// const q = urlParams.get('q');
+// const bg = urlParams.get('bg') || '#f5f5f5';
+// const fg = urlParams.get('fg') || '#21409a';
+// const h = urlParams.get('h') || 200;
+// urlParams.delete('h');
+// document.querySelector("[name=q]").value = q;
+// document.querySelector("[name=bg]").value = bg;
+// document.querySelector("[name=fg]").value = fg;
+// document.querySelector("[name=h]").value = h;
+// urlParams.set('id', 'inp'+crc32(q));
+// let str = urlParams.toString();
+// document.querySelector("output").textContent = `<iframe src="https://frumbert.github.io/public/textarea.html?${str}" width="100%" height="${h}" seamless></iframe>`;
+</script>
+</body>
+</html>
