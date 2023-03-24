@@ -21,7 +21,7 @@
     <p>VIC: <input type="text" size="40" name="VIC"></p>
     <p>QLD: <input type="text" size="40" name="QLD"></p>
     <p>TAS: <input type="text" size="40" name="TAS"></p>
-    <p>Base colour: <input type="color" value="#4099d1" name="fill"> Hover: <input type="color" value="#15477e" name="link"></p>
+    <p>Base colour: <input type="color" value="#4099d1" name="fill"> Hover: <input type="color" value="#15477e" name="link"> Height: <input type="number" value="500" name="height"></p>
     <p><code></code></p>
     <p><button type="submit">Make</button></p>
 </form>
@@ -30,19 +30,20 @@
 </div>
 
 <script>
+let height = 400;
 const code = document.querySelector('code');
 const outp = document.querySelector('iframe');
 const urlParams = new URLSearchParams(window.location.search);
 const outParams = new URLSearchParams();
 for (const [key, value] of urlParams.entries()) {
-    console.log('key',key,value, document.querySelector(`[name="${key}"]`));
     if (document.querySelector(`[name="${key}"]`)) document.querySelector(`[name="${key}"]`).value = value;
     if (value.length) {
         outParams.set(key,value);
     }
+    if (key == 'height') height = value;
 }
 outp.src = "ausmap.html?" + outParams.toString();
-code.textContent = `<iframe src="https://frumbert.github.io/public/ausmap.html?${outParams.toString()}" width="100%" height="400" seamless></iframe>`;
+code.textContent = `<iframe src="https://frumbert.github.io/public/ausmap.html?${outParams.toString()}" width="100%" height="${height}" seamless></iframe>`;
 
 // ['fill','linl','NT','WA','NSW','ACT','SA','VIC','QLD','TAS'].forEach((v) => {
 
