@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>numbered heading</title>
+    <style>
+        body{font-family: sans-serif; font-size: 20px }
+        input { padding: .25rem; font-size: inherit;  }
+    </style>
+</head>
+<body>
+
+
+    <h1>Make numbered SVG heading</h1>
+    <form method="dialog">
+        <label>Circle colour: <input type="color" value="#0080c6" oninput="this.nextElementSibling.value = this.value"><input type="text" size="6" id="c1" onchange="this.previousElementSibling.value = this.value"></label>
+        <label>Number: <input type="number" min="1" value="1" size="3"></label>
+        <br>
+        <label>Heading colour: <input type="color" value="#21409a" oninput="this.nextElementSibling.value = this.value"><input type="text" size="6" id="c2" onchange="this.previousElementSibling.value = this.value"></label>
+        <label>Heading: <input type="text" size="30" id="heading"></label>
+        <br>
+        <input type="button" value="Download" onclick="download()">
+    </form>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            Array.from(document.querySelectorAll('input[type="color"]')).forEach((v) => {
+                v.nextElementSibling.value = v.value;
+            })
+        });
+        function download() {
+            const bg = document.querySelector('#c1').value;
+            const fg = document.querySelector('#c2').value;
+            const num = ~~document.querySelector('input[type="number"]').value;
+            const text = document.querySelector('#heading').value.trim();
+            const template = `<?xml version="1.0" encoding="UTF-8"?><svg id="b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 25">
+                <defs>
+                    <style>
+                        @font-face{font-family:Inter;src:url(https://fonts.googleapis.com/css2?family=Inter)}
+                    </style>
+                </defs>
+                <circle cx="13" cy="12.5" r="12.5" fill="${bg}"/>
+                <text transform="translate(9.88 16.76)" fill="#fff" font-family="'Inter', sans-serif" font-size="12" font-weight="800">${num}</text>
+                <text transform="translate(80.62 19.74)" fill="${fg}" font-family="'Inter', sans-serif" font-size="21">${text}</text>
+            </svg>`;
+
+            const a = document.createElement('a');
+            a.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(template);
+            a.download = text.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/\_{2,}/,'_')+'.svg';
+            a.click();
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make graph</title>
+</head>
+<body>
+    <p>Data, series on each line. in format 'name,pc1, .. pcN'.</p>
+    <p><textarea rows="10" cols="100">
+        Disrespect,6,87,7
+        Ineffective communication@15,22,70,8
+        Boundary breach,26,65,9
+        Lack of emotional support,8,80,13
+    </textarea></p>
+    <p>Colours: <input type="text" size="50" id="c1" value="#234f8c, #54a2d9, #89d0e8"></p>
+    <p>Legends: <input type="text" size="50" id="c2" value="Below standard, Met standard, Unknown *"></p>
+    <p>Greens: #2b6669,#19baaa,#a0d97e  Blues: #234f8c,#54a2d9,#89d0e8  Reds: #642e66,#bd3463,#e4adcd  Oranges: #c83f36,#fd9830,#fce15b</p>
+    <p>Footnote: <input type="text" size="50" id="c3" value="* Unknown is used when the stadnard was not assessed or the final assessment report was unavailable"></p>
+    <p><button>Make graph</button></p>
+    <pre></pre>
+    <p><a href="#" download>download</a></p>
+    <output></output>
+    
+
+    <script type="text/javascript">
+    const textarea = document.querySelector('textarea');
+    const c1 = document.querySelector('#c1');
+    const c2 = document.querySelector('#c2');
+    const c3 = document.querySelector('#c3');
+    const button = document.querySelector('button');
+    const output = document.querySelector('output');
+    const dl = document.querySelector('a');
+    const pre = document.querySelector('pre');
+
+    const px = [640,360]; // output svg size
+    const margin = 10; // gap
+    const fontsize = 18;
+    const duration = 5000; // ms
+
+    button.addEventListener('click', () => {
+        const colours = c1.value.split(',').map(Function.prototype.call, String.prototype.trim);
+        const footnote = c3.value.trim();
+        const rows = textarea.value.split('\n');
+
+        let series = [];
+        let legends = c2.value.split(',').map(Function.prototype.call, String.prototype.trim); // one way
+
+        rows.forEach((line) => {
+            const [name,...data] = line.split(',').map(s=>s.trim()); // the other way
+            if (!name.length) return;
+            const values = data.map(v=>parseInt(v,10));
+            const sum = values.reduce((partial,a) => partial+a,0); // total may not be 100
+            let objs = [];
+            let size = fontsize;
+            let nlabel = name;
+            if (name.indexOf('@')!==-1) {
+                let v = name.split('@');
+                nlabel = v[0];
+                size = parseFloat(v[1]);
+            }
+           
+            values.forEach((val, index) => {
+                let pc = Math.round((val / sum) * 100);
+                objs.push({
+                    label: val,
+                    width: pc,
+                    colour: colours[index]
+                });
+            });
+            series.push({ name:nlabel, size, values: objs });
+        });
+
+        legends = legends.map((value,index) => {
+            return {
+                label: value,
+                colour: colours[index]
+            }
+        });
+
+        drawGraph(series, legends, footnote);
+
+    });
+    
+    function drawGraph(series,legends,footnote) {
+        console.log(series,legends,footnote);
+        let svg = `<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${px[0]} ${px[1]}" width="${px[0]}" height="${px[1]}">
+    <defs>
+        <style>
+            @font-face{font-family:Inter;src:url(https://fonts.googleapis.com/css2?family=Inter)}
+            text { textRendering: optimizeLegibility }
+        </style>
+    </defs>\n`;
+        let hoffset = 0; let hstep = (px[1] / (series.length + 3));
+        let l = px[0] / 4; // 1 quarter
+        let r = l * 3; // 3 quarters
+        series.forEach((obj,index) => {
+            let xo = l; // starting offset for x
+            let ty = (hoffset + (hstep / 2)) +(fontsize/3); // - (fontsize / 2);
+            svg += '    <g>\n';
+            svg += `        <text x="0" y="${ty}" width="${l}" font-family="'Inter', sans-serif" font-size="${obj.size}px" text-rendering="optimizeLegibility" text-anchor="right" fill="#000000">${obj.name}</text>\n`;
+            obj.values.forEach((box,i) => {
+                let w = Math.round((box.width / 100) * r);
+                let tx = (xo + (w/2)) - ((1+box.label.toString().length*fontsize) / 2); // near enough
+                let bstep = Math.round(duration / obj.values.length-1);
+                svg += `        <rect x="${xo}" y="${hoffset}" fill="${box.colour}" width="0" height="${hstep}">`;
+                svg += `<animate attributeName="width" from="0" to="${w}" dur="${bstep}ms" repeatCount="1" begin="${bstep * i}ms" fill="freeze" />`;
+                svg += '</rect>';
+                svg += `<text x="${tx}" y="${ty}" font-family="'Inter', sans-serif" font-size="${fontsize}px" fill="#ffffff">${box.label}%</text>\n`;
+                svg += `        <rect x="${l}" y="${hoffset}" width="${r}" height="${hstep}" stroke="#f0f0f0" fill="none" opacity="1">`;
+                svg += `<animate attributeName="opacity" from="1" to="0" dur="${bstep}ms" begin="${bstep * 1}" fill="freeze"/></rect>\n`;
+
+                xo += w;
+
+            });
+            hoffset += hstep + margin;
+            svg += '    </g>\n';
+        });
+
+        let x = l/2;
+        let bstep = Math.round(duration / legends.length-1);
+console.dir(bstep);
+        legends.forEach((o,i) => {
+            let ty = Math.round(hoffset + (hstep / 2));
+            let w = r / legends.length-1;
+            let h = fontsize * 1.5;
+            let y = Math.round(ty - (h/2)); 
+            
+            svg += `    <g>\n        <circle cx="${x+h/2}" cy="${y+h/2 - (fontsize/2)}" fill="${o.colour}" r="0">`;
+            svg += `<animate from="0" to="${h/2}" attributeName="r" begin="${bstep*i}ms" dur="${bstep}ms" fill="freeze" /></circle>\n`;
+            svg += `        <text x="${x+h+(fontsize/3)}" y="${ty}" width="${w}" font-family="'Inter', sans-serif" font-size="${fontsize}px" fill="#000000" opacity="0">${o.label}`;
+            svg += `<animate from="0" to="1" attributeName="opacity" begin="${bstep*i}ms" dur="${bstep}ms" fill="freeze" />`;
+            svg += `</text>\n`;
+            svg += `    </g>\n`;
+
+            x = x+h+(fontsize/3)+w;
+        });
+        hoffset += hstep + margin;
+
+        let ty = Math.round(hoffset + (hstep / 2));
+        svg += `    <g>\n        <text x="0" y="${ty}" width="${px[0]}" font-family="'Inter', sans-serif" font-size="${Math.round(fontsize * .75)}px" fill="#999999">${footnote}</text>\n    </g>\n`;
+
+        svg += '</svg>';
+        output.innerHTML = svg;
+        pre.textContent = svg;
+        dl.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        dl.download = 'graph_NOPROCESS_.svg'; // text.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/\_{2,}/,'_')+'.svg';
+
+    }
+
+    </script>
+
+</body>
+</html>

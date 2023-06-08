@@ -9,7 +9,8 @@
 <body>
 <form method="get">
     <input type="hidden" name="w" value="800">
-    <p><textarea cols="80" rows="5" name="q"></textarea></p>
+    <p>Prompt:<br><textarea cols="80" rows="5" name="q"></textarea></p>
+    <p>Feedback:<br><textarea cols="80" rows="5" name="f"></textarea></p>
     <p>Background: <input type="color" value="#f5f5f5" name="bg"> Accent: <input type="color" value="#21409a" name="fg"> Height: <input type="number" min="100" max="2000" step="10" value="200" name="h" size="5"> </p>
     <p><output></output></p>
     <p><button type="submit">Make</button></p>
@@ -18,17 +19,20 @@
 let urlParams = new URLSearchParams(window.location.search);
 const crc32=function(r){for(var a,o=[],c=0;c<256;c++){a=c;for(var f=0;f<8;f++)a=1&a?3988292384^a>>>1:a>>>1;o[c]=a}for(var n=-1,t=0;t<r.length;t++)n=n>>>8^o[255&(n^r.charCodeAt(t))];return(-1^n)>>>0};
 const q = urlParams.get('q');
+const f = urlParams.get('f');
 const bg = urlParams.get('bg') || '#f5f5f5';
 const fg = urlParams.get('fg') || '#21409a';
 const h = urlParams.get('h') || 200;
 urlParams.delete('h');
 document.querySelector("[name=q]").value = q;
+document.querySelector("[name=f]").value = f;
 document.querySelector("[name=bg]").value = bg;
 document.querySelector("[name=fg]").value = fg;
 document.querySelector("[name=h]").value = h;
 urlParams.set('id', 'inp'+crc32(q));
 let str = urlParams.toString();
 document.querySelector("output").textContent = `<iframe src="https://frumbert.github.io/public/textarea.html?${str}" width="100%" height="${h}" seamless></iframe>`;
+document.querySelector('output').insertAdjacentHTML('afterend', `<br><a href='textarea-feedback.html?${str}' target='_blank'>test</a>`);
 </script>
 </body>
 </html>
