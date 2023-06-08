@@ -1032,6 +1032,7 @@
 <dialog>
   <h2>State</h2>
   <div></div>
+  <p></p>
   <form method="dialog">
     <button>Close</button>
   </form>
@@ -1080,6 +1081,17 @@ let statenames = {
 	'TAS':'Tasmania'
 };
 
+let legislation = {
+	'NT':'Medicines, Poisons And Therapeutic Goods Act 2014 (NT) ',
+	'WA':'Medicines & Poisons Act 2014, Misuse of Drugs Act 1981',
+	'NSW':'oisons and Therapeutic Goods Regulation 2008 (NSW) ',
+	'ACT':'Medicines, Poisons and Therapeutic Goods Regulation 2008 ',
+	'SA':'Controlled Substances (Poisons) Regulations 2011 (SA) ',
+	'VIC':'Drugs, Poisons and Controlled Substances Regulations 2006 (VIC) ',
+	'QLD':'Health (Drugs and Poisons) Regulation 1996 (QLD)',
+	'TAS':'Poisons Regulations 2008 (Tas) '
+};
+
 function popup(e) {
 	e.preventDefault();
 	const state = e.target.id;
@@ -1107,6 +1119,7 @@ function popup(e) {
 	}
 
 	dialog.querySelector('h2').textContent = statenames[state];
+	dialog.querySelector('p').textContent = legislation[state];
 	dialog.querySelector('div').textContent = ''; // empty
 	dialog.querySelector('div').appendChild(table);
 	dialog.showModal();
