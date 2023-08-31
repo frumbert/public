@@ -6,48 +6,52 @@
     <title>Vimeo Completion Proxy for Storyline</title>
     <style>
     body { margin: 0; background: black; padding: 56.25% 0 0 0; overflow: hidden; min-height: 100vh; }
-    iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    iframe { position: absolute; top:0; left: 0; width: 100%; height: 100%; }
     </style>
     <script src="https://player.vimeo.com/api/player.js"></script>
 </head>
 <body>
     
 </body>
-<script>
+<script type="module">
 
     let params = (new URL(document.location)).searchParams;
-    let percentage = params.has("required") ? params.get("required") : 0.75;
+    let percentage = params.has("required") ? 0+params.get("required") : 0.75;
     let vimeo_id = params.get("id");
-    let vimeo_h = params.get("h");    
+    let vimeo_h = params.get("h");
+    let completed = false;
     let tag = `<iframe src="https://player.vimeo.com/video/${vimeo_id}?h=${vimeo_h}&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 
     // completion percentage in the range of 0-1, but you can pass 0-100
     if (percentage > 1) percentage = percentage / 100;
 
+    // inject the iframe
+    document.body.insertAdjacentHTML('afterbegin', tag);
+
+    const player = new Vimeo.Player(document.querySelector('iframe'));
+
     // listen to events
     player.on('timeupdate', function(data) {
-        if ((_data.seconds / data.duration) >= percentage) {
+        if ((data.seconds / data.duration) >= percentage) {
             if (!completed) {
-
-                // when completed, tell Storyline to set a variable
-                // storyline will have to watch the variable change then set the passed/completed for the course
-                var player = parent.GetPlayer();
-                player.SetVar("completed", true);
+                try {
+                    // when completed, tell Storyline to set a variable
+                    // storyline will have to watch the variable change then set the passed/completed for the course
+                    var storyline = parent.GetPlayer();
+                    storyline.SetVar("completed", "1");
+                } catch (e) {
+                    // can't access domain
+                }
+                // only execute this once
                 completed = true;
             }
         }
     });
 
-    player.on('play', function() {
-      console.log('Played the video');
-    });
-
+    // visual cue to see if script is executing
     player.getVideoTitle().then(function(title) {
         document.title = title;
     });
-
-    // inject the iframe
-    document.body.insertAdjacentHTML('beforeend', tag);
 
 </script>
 </html>
