@@ -38,6 +38,7 @@
                     // when completed, tell Storyline to set a variable
                     // storyline will have to watch the variable change then set the passed/completed for the course
                     var storyline = parent.GetPlayer();
+                    console.dir(storyline);
                     storyline.SetVar("completed", "1");
                 } catch (e) {
                     // can't access domain
