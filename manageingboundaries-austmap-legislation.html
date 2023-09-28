@@ -1051,7 +1051,7 @@ let headings = [
 let values = [
 	'Not covered in legislation',
 	'Some restrictions',
-	'No restrictions',
+	'No legislative restrictions',
 	'No self-prescribing',
 	'No self-prescribing under PBS',
 	'No self-prescribing unless “verifiable emergency”',
@@ -1151,7 +1151,7 @@ function setSize() {
         window.parent.document; // trigger cross domain warning; catch; otherwise
         const bb = document.querySelector('#au-state-map').getBoundingClientRect();
         const iframe = parent.document.querySelector("iframe[src$='" + location.search + "']");
-        console.log(iframe);
+        // console.log(iframe);
         
         if (iframe) requestAnimationFrame((event) => { iframe.style.height = (5 + parseInt(bb.height,10)) + 'px' });
     } catch {
