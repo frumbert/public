@@ -1059,17 +1059,23 @@ let values = [
 	'No self-administering self-prescribed S8s or restricted S4s',
 	'No self-administering self-prescribed S8s',
 	'No prescribing for close family members unless “verifiable emergency”',
-	'Not prohibited but “strongly discouraged except in an emergency”'
+	'Not prohibited but “strongly discouraged except in an emergency”',
+	'No self-prescribing of restricted S4s',
+	'No self-prescribing of S4 drugs of addiction unless an emergency',
+	'No self-prescribing of restricted medicines, or by interns of all medicines',
+	'No self-prescribing high risk-medicines, except with reasonable excuse',
+	'No supply except in an emergency',
+	'No self-administering unless lawfully supplied'
 ];
 let matrix = {
-	'NT':[1,3,7,2,2],
-	'WA':[1,6,0,2,10],
-	'NSW':[2,2,0,2,2],
-	'ACT':[1,3,0,2,2],
-	'SA':[2,5,0,2,9],
-	'VIC':[3,3,0,2,2],
-	'QLD':[2,2,8,2,2],
-	'TAS':[2,3,0,2,2]
+	'NT':[11,3,7,2,2],
+	'WA':[12,6,2,2,10],
+	'NSW':[2,2,2,2,2],
+	'ACT':[13,3,2,2,2],
+	'SA':[2,5,15,2,9],
+	'VIC':[3,3,16,2,2],
+	'QLD':[14,3,8,2,2],
+	'TAS':[2,3,2,2,2]
 };
 let statenames = {
 	'NT':'Northern Territory',
@@ -1083,14 +1089,14 @@ let statenames = {
 };
 
 let legislation = {
-	'NT':'Medicines, Poisons And Therapeutic Goods Act 2014 (NT) ',
-	'WA':'Medicines & Poisons Act 2014, Misuse of Drugs Act 1981',
-	'NSW':'Poisons and Therapeutic Goods Regulation 2008 (NSW) ',
-	'ACT':'Medicines, Poisons and Therapeutic Goods Regulation 2008 ',
-	'SA':'Controlled Substances (Poisons) Regulations 2011 (SA) ',
-	'VIC':'Drugs, Poisons and Controlled Substances Regulations 2006 (VIC) ',
-	'QLD':'Health (Drugs and Poisons) Regulation 1996 (QLD)',
-	'TAS':'Poisons Regulations 2008 (Tas) '
+	'NT':'Medicines, Poisons and Therapeutic Goods Act 2012 (NT)',
+	'WA':'Medicines and Poisons Act 2014 (WA); Medicines and Poisons Regulations 2016 (WA); Misuse of Drugs Regulations (WA); S8 Medications Prescribing Code',
+	'NSW':'Poisons and Therapeutic Goods Act 1966 (NSW); Poisons and Therapeutic Goods Regulation 2008 (NSW)',
+	'ACT':'Medicines, Poisons and Therapeutic Goods Act 2008 (ACT); Medicines, Poisons and Therapeutic Goods Regulation 2008 (ACT)',
+	'SA':'Controlled Substances (Poisons) Regulations 2011 (SA)',
+	'VIC':'Drugs, Poisons and Controlled Substances Act 1981 (Vic); Drugs, Poisons and Controlled Substances Regulations 2017 (Vic)',
+	'QLD':'Medicines and Poisons Act 2019 (Qld); Medicines and Poisons (Medicines) Regulation 2021 (Qld)',
+	'TAS':'Poisons Act 1971 (Tas); Poisons Regulations 2018 (Tas)'
 };
 
 function popup(e) {
