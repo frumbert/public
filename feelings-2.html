@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feelings</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Inter&display=swap">
+    <style>
+    * {font-family: 'Inter', sans-serif;}
+    body{margin:0;background:white;color:#333}
+
+    body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    .wrapper { max-width: 800px; text-align: center; }
+
+    .statement { font-size: 1rem; margin: 2rem auto; opacity: 1; transition: opacity 1s; }
+    .statement.fadeOut { opacity: 0; }
+
+    .options {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      gap: 2rem;
+      opacity: 1; 
+    }
+
+    .options button {
+      border-radius: 1.5rem;
+      border: none;
+      background: #39b546;
+      padding: .5rem 1.5rem;
+      color: white;
+      text-shadow: 1px 1px 2px #00000040;
+      cursor: pointer;
+      transform: translateX(0);
+      opacity: 1; 
+    }
+
+    .options.fadeOut button:nth-child(1) {
+      animation-name: buttonfade;
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-in;
+      animation-duration: .3s;
+      animation-delay: .3s;
+    }
+    .options.fadeOut button:nth-child(2) {
+      animation-name: buttonfade;
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-in;
+      animation-duration: .3s;
+      animation-delay: .6s;
+    }
+    .options.fadeOut button:nth-child(3) {
+      animation-name: buttonfade;
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-in;
+      animation-duration: .3s;
+      animation-delay: .9s;
+    }
+
+    @keyframes buttonfade {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(-2.5rem);}
+    }
+
+    table { 
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th { padding: 10px; font-weight: normal; text-align: center; vertical-align: middle; }
+    td { vertical-align: bottom; text-align: center; position: relative; }
+    td span { display: block; width: 50%; left: 25%; bottom: 0; position: absolute;  }
+    span.agree { background-color: #f36f21; }
+    span.sometimes { background-color: #644c9c; }
+    span.never { background-color: #0080c6; }
+    table { display: none }
+    table tr:first-child th { border-right: 1px solid black; height: 3rem; }
+    table tr:last-child th { border-top: 1px solid black; }
+    </style>
+  </head>
+  <body>
+
+    <div class="wrapper">
+      <p class="statement"></p>
+      <div class="options"><button>Start</button></div>
+      <table>
+        <tbody>
+          <tr>
+            <th>%</th>
+            <td><span class="agree"></span></td>
+            <td><span class="sometimes"></span></td>
+            <td><span class="never"></span></td>
+          </tr>
+          <tr>
+            <td></td>
+            <th>Agree</th>
+            <th>Sometimes</th>
+            <th>Never</th>
+          </tr>
+        </tbody>
+      </output>
+    </div>
+
+  <script type="text/javascript">
+  
+    const statements = [
+      'I worry that I&apos;m not effective when communicating with my supervisor / colleagues / peers.',
+      'I worry that my comments may be viewed as abrupt / gruff / off-hand.',
+      'I don&apos;t always make myself fully understood when giving instructions to other members of the team.',
+      'I don&apos;t concern myself with what people think about my comments.',
+      'I&apos;m nervous or slightly anxious / self-conscious in my consultations, especially with new patients or if I am being observed by an experienced colleague.',
+      'I worry that people think that I don&apos;t know what I&apos;m doing.',
+      'I often wonder whether my colleagues think I&apos;m not very smart or just sometimes guessing when formulating a diagnosis.',
+      'At times I speak quietly or am afraid to speak up.',
+      'I have no idea how well my support team communicate with my patients.',
+    ];
+
+    const options = [
+      'Agree',
+      'Sometimes',
+      'Never'
+    ];
+
+    const feedback = [
+      "You agreed with most of these statements.",
+      "You agreed with some of these statements, you are doing well.",
+      "You're doing great!"
+    ];
+
+    const statement = document.querySelector('.statement');
+    const optionDiv = document.querySelector('.options');
+    const output = document.querySelector('table');
+
+    optionDiv.addEventListener('click', handler);
+
+    let submitted = false,
+      question = -1,
+      results = [];
+
+    function nextQuestion() {
+      statement.classList.add("fadeOut");
+      optionDiv.classList.add("fadeOut");
+      setTimeout(function (index) {
+        optionDiv.textContent = '';
+        showQuestion(index);
+      }, 1750, question++);
+    }
+
+    function showQuestion(index) {
+      if (index > statements.length - 1) {
+        showResults();
+        return;
+      }
+      statement.innerHTML = statements[index];
+      options.map(function(value,index) {
+        let node = document.createElement('button');
+        node.textContent = value;
+        node.dataset.index = index;
+        optionDiv.appendChild(node);
+      });
+      statement.classList.remove("fadeOut");
+      optionDiv.classList.remove("fadeOut");
+    }
+
+    function showResults() {
+      statement.textContent = 'Your results:';
+      optionDiv.textContent = '';
+      output.style.display = 'block';
+      let totals = [0,0,0];
+      results.map(function(value) {
+        totals[value]++;
+      });
+      for (let i=0; i<options.length; i++ ) {
+        output.querySelector('.' + options[i].toLowerCase()).style.height = ((totals[i] / statements.length) * 100) + '%';
+      }
+      statement.classList.remove("fadeOut");
+    }
+
+    function handler(e) {
+      if (question > -1) {;
+        const button = e.target.closest('button');
+        const index = ~~button.dataset.index;
+        results[question] = index;
+      } else {
+        question = 0;
+      }
+      nextQuestion();
+    }
+
+    // window.addEventListener('DOMContentLoaded', () => {
+    //     document.querySelector('table').addEventListener('mouseover', mouseover);
+    //     document.querySelector('table').addEventListener('mouseout', mouseout);
+    //     document.querySelector('table').addEventListener('change', tally);
+    //     theadtr = document.querySelector('thead>tr').children;
+    //     tally();
+    // });
+    // function mouseover(event) {
+    //     const target = event.target;
+    //     const td = target.closest('td');
+    //     if (td) {
+    //         const tr = td.parentNode;
+    //         let index = Array.prototype.indexOf.call(tr.children, td);
+    //         for (let i=0;i<theadtr.length;i++) {
+    //             theadtr[i].classList[i===index?'add':'remove']('hover');
+    //         }
+    //     }
+    // }
+    // function mouseout(event) {
+    //     for (th of theadtr) th.classList.remove('hover');
+    // }
+    // function tally() {
+    //     const tr = document.querySelector('tfoot>tr');
+    //     tr.children[1].innerHTML = `<output>${document.querySelectorAll('[data-col="1"]:checked').length}</output>`;
+    //     tr.children[2].innerHTML = `<output>${document.querySelectorAll('[data-col="2"]:checked').length}</output>`;
+    //     tr.children[3].innerHTML = `<output>${document.querySelectorAll('[data-col="3"]:checked').length}</output>`;
+    // }
+    </script>
+  </body>
+</html>
