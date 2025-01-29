@@ -174,7 +174,7 @@ Yes, if they have a legal court document such as a subpoena or if you consider t
         document.querySelector(`#${answer}`).parentNode.classList.add('correct');
         document.querySelector(`#${answer}`).parentNode.appendChild(output);
         output.removeAttribute('hidden'); output.classList.add(answer);
-        next.removeAttribute('hidden');
+        if (current < statements.length-1) next.removeAttribute('hidden');
         submit.setAttribute('hidden', true);
     }
 
