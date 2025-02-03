@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feelings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <style>
+    * {
+        font-family: "Inter", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+    }
+    b {
+        font-weight: 700;
+    }
+    :root {
+      --no: #f36f21;
+      --next: #644c9c;
+      --submit: #b1b539;
+      --correct: #39b546;
+      --yes: #0080c6;
+      --text: #345;
+    }
+
+    body { margin:1rem; background:white; color:var(--text); }
+
+    .wrapper { width: 100%; max-width: 800px; margin: 0 auto; }
+
+    form p {
+        margin: 2rem 1rem;
+    }
+
+    output {
+        background: #e7f7e1;
+        display: block; 
+        padding: .5rem;
+        border-radius: .2rem;
+        margin: 1rem 0 0 2.5rem;
+        &.no {
+            background: #f7e4e1;
+        }
+    }
+    output[hidden] { display: none }
+
+    button, label {
+      border-radius: 1.5rem;
+      border: none;
+      background: var(--submit);
+      padding: .5rem 1.5rem;
+      color: white;
+      text-shadow: 1px 1px 2px #00000040;
+      cursor: pointer;
+      transform: translateX(0);
+      opacity: 1;
+      position: relative;
+    }
+    label {
+        background: white;
+        color: var(--text);
+        margin-left: 1rem;
+    }
+    .next button {
+        background: var(--next);
+    }
+
+    .options.fadeOut button:nth-child(1) {
+      animation-name: buttonfade;
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-in;
+      animation-duration: .3s;
+      animation-delay: .3s;
+    }
+    .options.fadeOut button:nth-child(2) {
+      animation-name: buttonfade;
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-in;
+      animation-duration: .3s;
+      animation-delay: .6s;
+    }
+    input[type="radio"]{visibility: hidden;}
+    input[type="radio"]+label::after, input[type="radio"]+label::before {
+        width: 1rem;
+        height: 1rem;
+        background: var(--text);
+        border-radius: 50%;
+        content:'';
+        left:-1.5rem;
+        position:absolute;
+    }
+    input[type="radio"]+label::after {
+        width:0.8rem;
+        height:0.8rem;
+        transform: translateX(.1rem) translateY(.1rem);
+        background: white;
+    }
+    input[type="radio"]:checked+label::after {
+        background: unset;
+    }
+    input[type="radio"]:checked+label{color:white;}
+    input[type="radio"]:checked+label[for='yes']{ background:var(--yes);}
+    input[type="radio"]:checked+label[for='no']{ background:var(--no);}
+    p.correct input[type='radio']+label::before{background:var(--correct);}
+    p.next { margin-left: 1.5rem; }
+    @keyframes buttonfade {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(-2.5rem);}
+    }
+    @keyframes outputfade {
+      from { opacity: 0; transform: translateY(1rem); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <p class="question">The question will appear here</p>
+      <form>
+        <p><input type="radio" name="r1" value="yes" id="yes"><label for="yes">Yes</label></p>
+        <p><input type="radio" name="r1" value="no" id="no"><label for="no">No</label></p>
+        <p><button>Check answer</button></p>
+      </form>
+      <output hidden></output>
+      <p class="next"><button hidden>Next question</button></p>
+    </div>
+
+  <script type="text/javascript">
+  // function removeSiblings(n){let p=n.parentNode;if(p){let s=p.firstChild;while(s){const nS=s.nextSibling;if(s!==n)p.removeChild(s);s=nS;}}}
+  // [...self.parentElement.children].forEach(sibling => sibling !== self && sibling.classList.remove('checked')); // radio-like
+
+const statements = `
+Confirming your diagnosis of a patient you treated in ED.
+Finding out your neighbour's status as you are concerned about their dog left at in their yard.
+Checking your ex-partner's recent mental health admission.
+Follow-up on a patient at the request of a paramedic who brought them in.
+Looking for a case example to personalise a presentation you are giving to medical students.
+Looking for an update on your practice receptionist's care and when she might be returning to work.
+Checking your own blood test results. 
+Following up on a past patient of your team, at the request of your supervisor.
+Checking the patient's status in theatre at the request of their family.
+Police calling GP clinic with a request for information about a patient they are detaining.
+`.trim().split('\n');
+
+const responses = `
+Yes - if you have a legitimate clinical purpose for checking, and you document in the clinical record that you checked and why 
+No - this is not an appropriate reason to check a medical record. You should contact the neighbour directly or a local animal authority 
+No - clearly a breach of privacy 
+Yes, depending on the purpose of the paramedic's request. Yes, if the patient is still in the emergency department and it is clinically appropriate for the paramedic to have this information. This may not  be appropriate if the patient has been moved to another area of the hospital
+No - unless you have that patient's explicit consent 
+No - only those directly involved in the clinical care of the receptionist can access the records. Ideally staff working at the practice should not also be patients at the practice. 
+No - only your treating medical practitioner should access your results. You would need to apply for access like any other patient or check if they are accessible on your My Health Record.
+Yes, if there is a clinical justification and you document in the notes that you checked and why 
+Yes, if the information given is general in nature and subject to any requests by the patient about who can and can't have access to information 
+Yes, if they have a legal court document such as a subpoena or if you consider there to be a risk to the safety to the patient or someone else. No if it is a general enquiry without a written court document such as a subpoena
+`.trim().split('\n');
+
+    const question = document.querySelector('.question');
+    const form = document.querySelector('form');
+    const output = document.querySelector('output');
+    const next = document.querySelector('.next button');
+    const submit = document.querySelector('form button');
+
+    let current = -1;
+
+    form.addEventListener('submit', handleSubmit);
+    function handleSubmit(e) {
+        e.preventDefault();
+        output.textContent = responses[current];
+        let answer = responses[current].substr(0,3).toLocaleLowerCase().trim();
+        document.querySelector(`#${answer}`).parentNode.classList.add('correct');
+        document.querySelector(`#${answer}`).parentNode.appendChild(output);
+        output.removeAttribute('hidden'); output.classList.add(answer);
+        if (current < statements.length-1) next.removeAttribute('hidden');
+        submit.setAttribute('hidden', true);
+    }
+
+    next.addEventListener('click', nextQuestion);
+    function nextQuestion() {
+        current++;
+        question.innerHTML = `<b>${current+1} of ${statements.length}.</b> ${statements[current]}`;
+        output.textContent = '';
+        output.setAttribute('hidden', true);
+        output.removeAttribute('class');
+        form.insertAdjacentElement('afterend', output);
+        form.reset();
+        form.querySelectorAll('p').forEach(p=>p.removeAttribute('class'));
+        submit.removeAttribute('hidden');
+        next.setAttribute('hidden', true);
+    }
+
+    nextQuestion();
+
+    </script>
+  </body>
+</html>
